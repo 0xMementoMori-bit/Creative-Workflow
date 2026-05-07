@@ -1,0 +1,2412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Season Prep Workflow</title>
+  <meta
+    name="description"
+    content="A connected workflow dashboard for season feature prioritization, content ideation, copywriting, and creative briefing."
+  />
+  <style>
+    :root {
+      --bg: #f4eee3;
+      --bg-warm: #eadac1;
+      --card: rgba(255, 251, 244, 0.92);
+      --card-strong: rgba(255, 254, 250, 0.98);
+      --ink: #19242d;
+      --muted: #5f6774;
+      --line: rgba(25, 36, 45, 0.1);
+      --line-strong: rgba(25, 36, 45, 0.18);
+      --brand: #c65232;
+      --brand-deep: #883018;
+      --gold: #efb648;
+      --forest: #31574b;
+      --blue: #46749e;
+      --shadow: 0 24px 54px rgba(80, 54, 28, 0.12);
+      --radius-lg: 28px;
+      --radius-md: 20px;
+      --radius-sm: 14px;
+      --container: min(1380px, calc(100% - 32px));
+      color-scheme: light;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      min-height: 100%;
+      background:
+        radial-gradient(circle at top left, rgba(239, 182, 72, 0.24), transparent 32%),
+        radial-gradient(circle at 85% 14%, rgba(49, 87, 75, 0.16), transparent 28%),
+        linear-gradient(180deg, #f9f4eb 0%, #f1e4d0 52%, #ebdcc7 100%);
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.04)),
+        radial-gradient(circle at bottom right, rgba(198, 82, 50, 0.08), transparent 30%);
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .shell {
+      width: var(--container);
+      margin: 0 auto;
+      padding: 22px 0 40px;
+    }
+
+    .hero,
+    .panel,
+    .card {
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      background: var(--card);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+    }
+
+    .hero {
+      padding: 28px;
+      background:
+        radial-gradient(circle at top right, rgba(239, 182, 72, 0.24), transparent 30%),
+        linear-gradient(135deg, rgba(255, 252, 246, 0.98), rgba(244, 236, 222, 0.94));
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(49, 87, 75, 0.1);
+      color: var(--forest);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      max-width: 12ch;
+      margin: 16px 0 10px;
+      font-size: clamp(2.5rem, 5.5vw, 4.8rem);
+      line-height: 0.92;
+      letter-spacing: -0.04em;
+    }
+
+    .hero-grid {
+      display: grid;
+      gap: 20px;
+      grid-template-columns: minmax(0, 1.15fr) minmax(260px, 0.85fr);
+      align-items: start;
+    }
+
+    .hero-copy p,
+    .muted,
+    .field-note,
+    .prompt-note,
+    .empty-copy {
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .hero-stats,
+    .chip-row,
+    .button-row,
+    .tab-row,
+    .mini-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .stat {
+      padding: 16px;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      background: rgba(255, 255, 255, 0.68);
+    }
+
+    .stat strong {
+      display: block;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.78rem;
+      color: var(--forest);
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(239, 182, 72, 0.16);
+      border: 1px solid rgba(239, 182, 72, 0.28);
+      color: var(--brand-deep);
+      font-size: 0.9rem;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(290px, 360px) minmax(0, 1fr);
+      gap: 22px;
+      margin-top: 22px;
+    }
+
+    .panel {
+      padding: 22px;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 18px;
+      align-self: start;
+      display: grid;
+      gap: 18px;
+    }
+
+    .section-title {
+      margin-bottom: 10px;
+      font-size: 1.2rem;
+      line-height: 1.08;
+    }
+
+    .backlog-list,
+    .saved-list,
+    .summary-stack {
+      display: grid;
+      gap: 12px;
+    }
+
+    .backlog-item,
+    .saved-card,
+    .summary-card {
+      padding: 14px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.68);
+    }
+
+    .backlog-item.active {
+      border-color: rgba(198, 82, 50, 0.34);
+      background:
+        radial-gradient(circle at top right, rgba(239, 182, 72, 0.18), transparent 35%),
+        rgba(255, 255, 255, 0.88);
+    }
+
+    .backlog-item h3,
+    .saved-card h3,
+    .summary-card h3 {
+      margin-bottom: 6px;
+      font-size: 1rem;
+      line-height: 1.2;
+    }
+
+    .meta-row,
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(70, 116, 158, 0.1);
+      border: 1px solid rgba(70, 116, 158, 0.18);
+      color: var(--blue);
+      font-size: 0.82rem;
+    }
+
+    .badge.tier1 {
+      background: rgba(198, 82, 50, 0.12);
+      border-color: rgba(198, 82, 50, 0.2);
+      color: var(--brand);
+    }
+
+    .badge.tier2 {
+      background: rgba(239, 182, 72, 0.14);
+      border-color: rgba(239, 182, 72, 0.24);
+      color: #8d640a;
+    }
+
+    .badge.tier3 {
+      background: rgba(49, 87, 75, 0.1);
+      border-color: rgba(49, 87, 75, 0.16);
+      color: var(--forest);
+    }
+
+    .main {
+      display: grid;
+      gap: 18px;
+    }
+
+    .tab-row {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .tab {
+      padding: 16px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.7);
+      text-align: left;
+      transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    .tab:hover,
+    .tab:focus-visible {
+      transform: translateY(-1px);
+      border-color: rgba(198, 82, 50, 0.28);
+      box-shadow: 0 12px 24px rgba(80, 54, 28, 0.08);
+      outline: none;
+    }
+
+    .tab.active {
+      border-color: rgba(198, 82, 50, 0.38);
+      background:
+        radial-gradient(circle at top right, rgba(239, 182, 72, 0.2), transparent 34%),
+        rgba(255, 255, 255, 0.92);
+    }
+
+    .tab small {
+      display: block;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.76rem;
+      color: var(--brand);
+      font-weight: 700;
+    }
+
+    .tab strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 1rem;
+    }
+
+    .tab span {
+      color: var(--muted);
+      line-height: 1.45;
+      font-size: 0.9rem;
+    }
+
+    .step {
+      display: none;
+      grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
+      gap: 18px;
+    }
+
+    .step.active {
+      display: grid;
+    }
+
+    .stack {
+      display: grid;
+      gap: 18px;
+    }
+
+    .card {
+      padding: 22px;
+    }
+
+    .field-grid {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-size: 0.92rem;
+      font-weight: 700;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      padding: 13px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--line-strong);
+      background: rgba(255, 255, 255, 0.84);
+      color: var(--ink);
+      transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+    }
+
+    textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: rgba(198, 82, 50, 0.46);
+      box-shadow: 0 0 0 4px rgba(198, 82, 50, 0.1);
+      background: rgba(255, 255, 255, 0.98);
+      outline: none;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      padding: 11px 16px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+    }
+
+    .btn:hover,
+    .btn:focus-visible {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px rgba(80, 54, 28, 0.12);
+      outline: none;
+    }
+
+    .btn.primary {
+      background: linear-gradient(90deg, var(--brand) 0%, #e06e42 100%);
+      color: #fff8f2;
+    }
+
+    .btn.secondary {
+      background: rgba(49, 87, 75, 0.1);
+      color: var(--forest);
+      border-color: rgba(49, 87, 75, 0.18);
+    }
+
+    .btn.ghost {
+      background: rgba(255, 255, 255, 0.54);
+      color: var(--ink);
+      border-color: var(--line);
+    }
+
+    .btn.small {
+      min-height: 34px;
+      padding: 8px 12px;
+      font-size: 0.88rem;
+    }
+
+    .prompt-panel {
+      position: sticky;
+      top: 18px;
+      display: grid;
+      gap: 16px;
+    }
+
+    details {
+      border-radius: var(--radius-md);
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.66);
+      overflow: hidden;
+    }
+
+    summary {
+      padding: 14px 16px;
+      font-weight: 700;
+      cursor: pointer;
+      list-style: none;
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .prompt-body {
+      padding: 0 16px 16px;
+    }
+
+    .prompt-preview {
+      max-height: 320px;
+      overflow: auto;
+      padding: 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(25, 36, 45, 0.08);
+      background: rgba(255, 255, 255, 0.78);
+      white-space: pre-wrap;
+      line-height: 1.5;
+    }
+
+    .output-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .kv {
+      margin: 0;
+      display: grid;
+      gap: 10px;
+    }
+
+    .kv div {
+      display: grid;
+      gap: 4px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(25, 36, 45, 0.06);
+    }
+
+    .kv dt {
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--forest);
+    }
+
+    .kv dd {
+      margin: 0;
+      line-height: 1.5;
+      color: var(--ink);
+    }
+
+    .empty-state {
+      padding: 16px;
+      border-radius: var(--radius-md);
+      border: 1px dashed var(--line-strong);
+      background: rgba(255, 255, 255, 0.48);
+    }
+
+    .saved-card p {
+      margin-bottom: 0;
+    }
+
+    .saved-card strong {
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .saved-card .mini-actions {
+      margin-top: 12px;
+    }
+
+    .helper-list {
+      margin: 0;
+      padding-left: 18px;
+      display: grid;
+      gap: 10px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 1200px) {
+      .workspace,
+      .step,
+      .hero-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar,
+      .prompt-panel {
+        position: static;
+      }
+    }
+
+    @media (max-width: 860px) {
+      .tab-row,
+      .field-grid,
+      .hero-stats {
+        grid-template-columns: 1fr;
+      }
+
+      .shell {
+        width: min(100% - 20px, 1380px);
+        padding-top: 16px;
+      }
+
+      .hero,
+      .panel,
+      .card {
+        padding: 18px;
+      }
+
+      .button-row .btn,
+      .mini-actions .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="hero">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <div class="eyebrow">Connected Workflow</div>
+          <h1>Season Prep Content System</h1>
+          <p>
+            This version is built to cut repetition. Features live in one backlog, each step inherits the last one, and the main outputs are organized as compact cards instead of long prompt blocks.
+          </p>
+          <div class="chip-row">
+            <span class="chip">Persistent feature backlog</span>
+            <span class="chip">Step-to-step autofill</span>
+            <span class="chip">Saved content ideas</span>
+            <span class="chip">Saved copy variants</span>
+            <span class="chip">Saved creative briefs</span>
+          </div>
+        </div>
+        <div class="hero-stats">
+          <div class="stat">
+            <strong>Shorter flow</strong>
+            <span>Pick a feature once, then promote it through ideation, copy, and creative without retyping the same context.</span>
+          </div>
+          <div class="stat">
+            <strong>Cleaner output</strong>
+            <span>Each stage stores a structured record so the team can scan decisions fast instead of reading raw prompt text first.</span>
+          </div>
+          <div class="stat">
+            <strong>Local-first</strong>
+            <span>Everything is saved in your browser on this machine, so your backlog stays available after refresh.</span>
+          </div>
+          <div class="stat">
+            <strong>Expandable</strong>
+            <span>The data model is ready for future steps or API wiring when you want to turn prompt builders into true runs.</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <aside class="sidebar">
+        <section class="panel">
+          <h2 class="section-title">Feature Backlog</h2>
+          <p class="muted">Your season features live here. Select one to autofill the next steps.</p>
+          <div class="mini-actions">
+            <button class="btn secondary small" id="load-all-samples" type="button">Load Demo Workflow</button>
+            <button class="btn ghost small" id="clear-all-data" type="button">Reset All Data</button>
+          </div>
+          <div class="summary-stack" style="margin-top: 14px;">
+            <div class="summary-card">
+              <h3 id="summary-feature-count">0 Features</h3>
+              <p class="muted">Tracked in the backlog.</p>
+            </div>
+            <div class="summary-card">
+              <h3 id="summary-selected-feature">No feature selected</h3>
+              <p class="muted">Choose one feature to drive the rest of the workflow.</p>
+            </div>
+          </div>
+          <div class="backlog-list" id="backlog-list" style="margin-top: 14px;"></div>
+        </section>
+      </aside>
+
+      <section class="main">
+        <div class="tab-row">
+          <button class="tab active" type="button" data-step="step1">
+            <small>Step 1</small>
+            <strong>Backlog Setup</strong>
+            <span>Parse features, assign priority context, and save them once.</span>
+          </button>
+          <button class="tab" type="button" data-step="step2">
+            <small>Step 2</small>
+            <strong>Content Ideas</strong>
+            <span>Create and save content opportunities by feature.</span>
+          </button>
+          <button class="tab" type="button" data-step="step3">
+            <small>Step 3</small>
+            <strong>Copy Variants</strong>
+            <span>Promote a content idea into format-native copy.</span>
+          </button>
+          <button class="tab" type="button" data-step="step4">
+            <small>Step 4</small>
+            <strong>Creative Briefs</strong>
+            <span>Turn final concepts into production-ready visual direction.</span>
+          </button>
+        </div>
+
+        <section class="step active" id="step1">
+          <div class="stack">
+            <article class="card">
+              <h2>Step 1: Build the Feature Backlog</h2>
+              <p class="muted">
+                Add season features once. You can also attach summary, tier, KPI snapshot, and strategic tags here so later steps inherit the important context automatically.
+              </p>
+              <div class="field-grid">
+                <div class="field">
+                  <label for="game-name">Game / brand</label>
+                  <input id="game-name" type="text" placeholder="Fableborne" />
+                </div>
+                <div class="field">
+                  <label for="season-name">Season / campaign</label>
+                  <input id="season-name" type="text" placeholder="Season 12: Guild Wars" />
+                </div>
+                <div class="field full">
+                  <label for="season-context">Season context</label>
+                  <textarea id="season-context" placeholder="Describe the season goals, player context, and what matters strategically."></textarea>
+                </div>
+                <div class="field full">
+                  <label for="feature-input">Feature list</label>
+                  <textarea id="feature-input" placeholder="One feature per line. Format: Feature name | short description | supporting notes"></textarea>
+                  <div class="field-note">This parser seeds the backlog quickly. Existing feature cards with the same name will be updated instead of duplicated.</div>
+                </div>
+                <div class="field full">
+                  <label for="supporting-docs">Supporting documentation</label>
+                  <textarea id="supporting-docs" placeholder="Paste GDD notes, economy context, event structure, or anything the strategist should consider."></textarea>
+                </div>
+              </div>
+              <div class="button-row" style="margin-top: 16px;">
+                <button class="btn primary" id="save-features-to-backlog" type="button">Save Features To Backlog</button>
+                <button class="btn secondary" id="load-step1-sample" type="button">Load Step 1 Sample</button>
+                <button class="btn ghost" id="clear-step1" type="button">Clear Step 1</button>
+              </div>
+            </article>
+
+            <article class="card">
+              <h2>Selected Feature Priority Card</h2>
+              <p class="muted">This is the lightweight record that helps the rest of the flow stay short.</p>
+              <div class="field-grid">
+                <div class="field">
+                  <label for="priority-feature-name">Feature name</label>
+                  <input id="priority-feature-name" type="text" placeholder="Select a feature from the backlog" />
+                </div>
+                <div class="field">
+                  <label for="priority-tier">Marketing priority</label>
+                  <select id="priority-tier">
+                    <option value="">Select a tier</option>
+                    <option>Tier 1: Core marketing pillar</option>
+                    <option>Tier 2: Supporting feature</option>
+                    <option>Tier 3: Low priority</option>
+                  </select>
+                </div>
+                <div class="field full">
+                  <label for="priority-summary">Short summary</label>
+                  <textarea id="priority-summary" placeholder="1-2 sentence feature summary that will carry into later steps."></textarea>
+                </div>
+                <div class="field">
+                  <label for="priority-kpi">KPI snapshot</label>
+                  <textarea id="priority-kpi" placeholder="Engagement 4 | Retention 5 | Monetization 3 | Weighted 4.10"></textarea>
+                </div>
+                <div class="field">
+                  <label for="priority-tags">Strategic tags</label>
+                  <textarea id="priority-tags" placeholder="Retention Loop, Social/Multiplayer Driver"></textarea>
+                </div>
+              </div>
+              <div class="button-row" style="margin-top: 16px;">
+                <button class="btn primary" id="save-priority-card" type="button">Save Priority Card</button>
+                <button class="btn secondary" id="send-feature-to-step2" type="button">Use In Step 2</button>
+              </div>
+            </article>
+
+            <article class="card">
+              <h2>Step 1 Output Card</h2>
+              <div id="step1-output-card" class="output-grid"></div>
+            </article>
+          </div>
+
+          <aside class="prompt-panel">
+            <div class="card">
+              <h3>Step 1 Prompt</h3>
+              <p class="prompt-note">Raw prompt stays available, but the output card is now the main working view.</p>
+              <details>
+                <summary>View Prompt 1</summary>
+                <div class="prompt-body">
+                  <div class="prompt-preview" id="step1-prompt-preview"></div>
+                </div>
+              </details>
+              <div class="button-row" style="margin-top: 14px;">
+                <button class="btn primary" id="copy-step1-prompt" type="button">Copy Prompt</button>
+              </div>
+            </div>
+          </aside>
+        </section>
+
+        <section class="step" id="step2">
+          <div class="stack">
+            <article class="card">
+              <h2>Step 2: Save Content Opportunities</h2>
+              <p class="muted">Select a backlog feature, generate the content prompt, then save the strongest idea as a reusable content record.</p>
+              <div class="field-grid">
+                <div class="field">
+                  <label for="step2-feature-select">Feature</label>
+                  <select id="step2-feature-select"></select>
+                </div>
+                <div class="field">
+                  <label for="marketing-tier">Marketing priority flag</label>
+                  <input id="marketing-tier" type="text" placeholder="Auto-filled from Step 1" />
+                </div>
+                <div class="field full">
+                  <label for="selected-feature-description">Feature summary</label>
+                  <textarea id="selected-feature-description" placeholder="Auto-filled from Step 1 or editable here."></textarea>
+                </div>
+                <div class="field">
+                  <label for="kpi-data">KPI importance data</label>
+                  <textarea id="kpi-data" placeholder="Auto-filled KPI snapshot"></textarea>
+                </div>
+                <div class="field">
+                  <label for="strategic-tags">Strategic tags</label>
+                  <textarea id="strategic-tags" placeholder="Auto-filled strategic tags"></textarea>
+                </div>
+                <div class="field full">
+                  <label for="step2-supporting-context">Supporting context</label>
+                  <textarea id="step2-supporting-context" placeholder="Player pain points, economy notes, creator context, or messaging constraints."></textarea>
+                </div>
+              </div>
+              <div class="button-row" style="margin-top: 16px;">
+                <button class="btn primary" id="generate-step2" type="button">Refresh Step 2 Prompt</button>
+                <button class="btn secondary" id="load-step2-sample" type="button">Load Step 2 Sample</button>
+              </div>
+            </article>
+
+            <article class="card">
+              <h2>Save a Content Idea</h2>
+              <div class="field-grid">
+                <div class="field full">
+                  <label for="content-idea">Content idea</label>
+                  <textarea id="content-idea" placeholder="Example: Most guilds waste their first ladder run by forcing the wrong comp."></textarea>
+                </div>
+                <div class="field">
+                  <label for="content-angle">Core angle</label>
+                  <input id="content-angle" type="text" placeholder="Mistakes players make" />
+                </div>
+                <div class="field">
+                  <label for="content-goal">Goal label</label>
+                  <select id="content-goal">
+                    <option value="">Select a goal</option>
+                    <option>Educate</option>
+                    <option>Sell</option>
+                    <option>Participate</option>
+                    <option>Share</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="content-format">Content format</label>
+                  <select id="content-format">
+                    <option value="">Select a format</option>
+                    <option>Tweet</option>
+                    <option>Thread</option>
+                    <option>Video Caption</option>
+                    <option>Article/Blog Intro</option>
+                    <option>Discord Post</option>
+                    <option>Carousel/slides</option>
+                    <option>Short-form video</option>
+                    <option>Long-form video</option>
+                    <option>Meme</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="content-behavior">Target player behavior</label>
+                  <textarea id="content-behavior" placeholder="What action should this content drive?"></textarea>
+                </div>
+                <div class="field full">
+                  <label for="content-why">Why this works</label>
+                  <textarea id="content-why" placeholder="Concise psychology + format-fit note."></textarea>
+                </div>
+              </div>
+              <div class="button-row" style="margin-top: 16px;">
+                <button class="btn primary" id="save-content-idea" type="button">Save Content Idea</button>
+                <button class="btn secondary" id="send-idea-to-step3" type="button">Promote To Step 3</button>
+              </div>
+            </article>
+
+            <article class="card">
+              <h2>Saved Content Opportunities</h2>
+              <div id="step2-saved-list" class="saved-list"></div>
+            </article>
+          </div>
+
+          <aside class="prompt-panel">
+            <div class="card">
+              <h3>Step 2 Prompt</h3>
+              <p class="prompt-note">Use the prompt when you want new idea generation. Save only the best ideas into the backlog.</p>
+              <details>
+                <summary>View Prompt 2</summary>
+                <div class="prompt-body">
+                  <div class="prompt-preview" id="step2-prompt-preview"></div>
+                </div>
+              </details>
+              <div class="button-row" style="margin-top: 14px;">
+                <button class="btn primary" id="copy-step2-prompt" type="button">Copy Prompt</button>
+              </div>
+            </div>
+          </aside>
+        </section>
+
+        <section class="step" id="step3">
+          <div class="stack">
+            <article class="card">
+              <h2>Step 3: Save Copy Variants</h2>
+              <p class="muted">Choose a feature and one saved content idea. The form below inherits the important context so you only focus on the copy decision.</p>
+              <div class="field-grid">
+                <div class="field">
+                  <label for="step3-feature-select">Feature</label>
+                  <select id="step3-feature-select"></select>
+                </div>
+                <div class="field">
+                  <label for="step3-idea-select">Content idea</label>
+                  <select id="step3-idea-select"></select>
+                </div>
+                <div class="field full">
+                  <label for="step3-feature-summary">Feature summary</label>
+                  <textarea id="step3-feature-summary" placeholder="Auto-filled from selected feature"></textarea>
+                </div>
+                <div class="field full">
+                  <label for="step3-content-idea">Content idea</label>
+                  <textarea id="step3-content-idea" placeholder="Auto-filled from selected content idea"></textarea>
+                </div>
+                <div class="field">
+                  <label for="step3-goal-label">Goal label</label>
+                  <select id="step3-goal-label">
+                    <option value="">Select a goal</option>
+                    <option>Educate</option>
+                    <option>Sell</option>
+                    <option>Participate</option>
+                    <option>Share</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="step3-format">Content format</label>
+                  <select id="step3-format">
+                    <option value="">Select a format</option>
+                    <option>Tweet</option>
+                    <option>Thread</option>
+                    <option>Video Caption</option>
+                    <option>Article/Blog Intro</option>
+                    <option>Discord Post</option>
+                    <option>Carousel/slides</option>
+                    <option>Short-form video</option>
+                    <option>Long-form video</option>
+                    <option>Meme</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="step3-angle">Creative angle</label>
+                  <input id="step3-angle" type="text" placeholder="Auto-filled or editable" />
+                </div>
+                <div class="field">
+                  <label for="step3-target-behavior">Target behavior</label>
+                  <textarea id="step3-target-behavior" placeholder="Auto-filled or editable"></textarea>
+                </div>
+              </div>
+              <div class="button-row" style="margin-top: 16px;">
+                <button class="btn primary" id="generate-step3" type="button">Refresh Step 3 Prompt</button>
+                <button class="btn secondary" id="load-step3-sample" type="button">Load Step 3 Sample</button>
+              </div>
+            </article>
+
+            <article class="card">
+              <h2>Save a Copy Variant</h2>
+              <div class="field-grid">
+                <div class="field">
+                  <label for="step3-emotional-trigger">Emotional trigger</label>
+                  <input id="step3-emotional-trigger" type="text" placeholder="Loss aversion and mastery" />
+                </div>
+                <div class="field">
+                  <label for="step3-on-asset-copy">Thumbnail / on-asset copy</label>
+                  <input id="step3-on-asset-copy" type="text" placeholder="You're Throwing Runs" />
+                </div>
+                <div class="field full">
+                  <label for="step3-marketing-copy">Marketing copy</label>
+                  <textarea id="step3-marketing-copy" placeholder="Paste or write the winning copy here."></textarea>
+                </div>
+                <div class="field full">
+                  <label for="step3-copy-why">Why this copy works</label>
+                  <textarea id="step3-copy-why" placeholder="Why this copy fits the platform and what behavior it drives."></textarea>
+                </div>
+              </div>
+              <div class="button-row" style="margin-top: 16px;">
+                <button class="btn primary" id="save-copy-variant" type="button">Save Copy Variant</button>
+                <button class="btn secondary" id="send-copy-to-step4" type="button">Promote To Step 4</button>
+              </div>
+            </article>
+
+            <article class="card">
+              <h2>Saved Copy Variants</h2>
+              <div id="step3-saved-list" class="saved-list"></div>
+            </article>
+          </div>
+
+          <aside class="prompt-panel">
+            <div class="card">
+              <h3>Step 3 Prompt</h3>
+              <p class="prompt-note">This step is now mostly about selecting the right idea and saving the best copy variant.</p>
+              <details>
+                <summary>View Prompt 3</summary>
+                <div class="prompt-body">
+                  <div class="prompt-preview" id="step3-prompt-preview"></div>
+                </div>
+              </details>
+              <div class="button-row" style="margin-top: 14px;">
+                <button class="btn primary" id="copy-step3-prompt" type="button">Copy Prompt</button>
+              </div>
+            </div>
+          </aside>
+        </section>
+
+        <section class="step" id="step4">
+          <div class="stack">
+            <article class="card">
+              <h2>Step 4: Save Creative Briefs</h2>
+              <p class="muted">Choose a feature and copy variant. This stage should feel like a direct handoff to production, not a re-entry task.</p>
+              <div class="field-grid">
+                <div class="field">
+                  <label for="step4-feature-select">Feature</label>
+                  <select id="step4-feature-select"></select>
+                </div>
+                <div class="field">
+                  <label for="step4-copy-select">Copy variant</label>
+                  <select id="step4-copy-select"></select>
+                </div>
+                <div class="field full">
+                  <label for="step4-feature-description">Feature description</label>
+                  <textarea id="step4-feature-description" placeholder="Auto-filled from selected feature"></textarea>
+                </div>
+                <div class="field full">
+                  <label for="step4-content-idea">Content idea</label>
+                  <textarea id="step4-content-idea" placeholder="Auto-filled from selected content idea / copy"></textarea>
+                </div>
+                  <div class="field">
+                    <label for="step4-content-format">Content format</label>
+                    <select id="step4-content-format">
+                    <option value="">Select a format</option>
+                    <option>Tweet</option>
+                    <option>Thread</option>
+                    <option>Video Caption</option>
+                    <option>Article/Blog Intro</option>
+                    <option>Discord Post</option>
+                    <option>Carousel/slides</option>
+                    <option>Short-form video</option>
+                    <option>Long-form video</option>
+                      <option>Meme</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label for="step4-recommended-size">Recommended asset size</label>
+                    <input id="step4-recommended-size" type="text" placeholder="Auto-recommended" readonly />
+                  </div>
+                  <div class="field">
+                    <label for="step4-recommended-type">Recommended content type</label>
+                    <input id="step4-recommended-type" type="text" placeholder="Auto-recommended" readonly />
+                  </div>
+                  <div class="field">
+                    <label for="step4-goal-label">Goal label</label>
+                    <select id="step4-goal-label">
+                    <option value="">Select a goal</option>
+                    <option>Educate</option>
+                    <option>Sell</option>
+                    <option>Participate</option>
+                    <option>Share</option>
+                  </select>
+                </div>
+                <div class="field full">
+                  <label for="step4-marketing-copy">Marketing copy</label>
+                  <textarea id="step4-marketing-copy" placeholder="Auto-filled from selected copy variant"></textarea>
+                </div>
+                <div class="field">
+                  <label for="step4-on-asset-copy">Thumbnail / on-asset copy</label>
+                  <input id="step4-on-asset-copy" type="text" placeholder="Auto-filled from selected copy variant" />
+                </div>
+                <div class="field">
+                  <label for="step4-emotional-trigger">Emotional trigger</label>
+                  <input id="step4-emotional-trigger" type="text" placeholder="Auto-filled from selected copy variant" />
+                </div>
+                <div class="field full">
+                  <label for="step4-target-behavior">Target player behavior</label>
+                  <textarea id="step4-target-behavior" placeholder="Auto-filled from selected feature / copy variant"></textarea>
+                </div>
+              </div>
+              <div class="button-row" style="margin-top: 16px;">
+                <button class="btn primary" id="generate-step4" type="button">Refresh Step 4 Prompt</button>
+                <button class="btn secondary" id="load-step4-sample" type="button">Load Step 4 Sample</button>
+              </div>
+            </article>
+
+            <article class="card">
+              <h2>Creative Recommendation</h2>
+              <div id="step4-recommendation-card" class="output-grid"></div>
+            </article>
+
+            <article class="card">
+              <h2>Save a Creative Brief Record</h2>
+              <div class="field-grid">
+                <div class="field">
+                  <label for="step4-reaction">Intended emotional reaction</label>
+                  <input id="step4-reaction" type="text" placeholder="I am already behind if my guild queues wrong" />
+                </div>
+                <div class="field">
+                  <label for="step4-platform-fit">Platform suitability</label>
+                  <input id="step4-platform-fit" type="text" placeholder="TikTok, Reels, Shorts, X video" />
+                </div>
+                <div class="field full">
+                  <label for="step4-brief-summary">Creative brief summary</label>
+                  <textarea id="step4-brief-summary" placeholder="Short internal note: what to make, what to emphasize, and why it should work."></textarea>
+                </div>
+              </div>
+              <div class="button-row" style="margin-top: 16px;">
+                <button class="btn primary" id="save-creative-brief" type="button">Save Creative Brief</button>
+              </div>
+            </article>
+
+            <article class="card">
+              <h2>Saved Creative Briefs</h2>
+              <div id="step4-saved-list" class="saved-list"></div>
+            </article>
+          </div>
+
+          <aside class="prompt-panel">
+            <div class="card">
+              <h3>Step 4 Prompt</h3>
+              <p class="prompt-note">This is now the clean final handoff step. You should already have the feature, idea, copy, and hook locked.</p>
+              <details>
+                <summary>View Prompt 4</summary>
+                <div class="prompt-body">
+                  <div class="prompt-preview" id="step4-prompt-preview"></div>
+                </div>
+              </details>
+              <div class="button-row" style="margin-top: 14px;">
+                <button class="btn primary" id="copy-step4-prompt" type="button">Copy Prompt</button>
+              </div>
+            </div>
+          </aside>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const storageKey = "seasonPrepWorkflowState";
+    const defaultState = {
+      gameName: "",
+      seasonName: "",
+      seasonContext: "",
+      supportingDocs: "",
+      features: [],
+      selectedFeatureId: "",
+      activeStep: "step1",
+      selectedIdeaId: "",
+      selectedCopyId: ""
+    };
+
+    const step1PromptFramework = [
+      "You are a senior product marketing strategist for a mobile free-to-play game with Web3 elements.",
+      "",
+      "Your job is to evaluate and rank a list of upcoming season features based on their expected impact on core game KPIs so the content marketing team knows what deserves the most visibility.",
+      "",
+      "Score every feature for engagement, retention, and monetization.",
+      "Calculate weighted importance using 0.3 / 0.4 / 0.3.",
+      "Assign strategic tags and a marketing priority tier.",
+      "Return a structured table with behavioral reasoning."
+    ].join("\n");
+
+    const step2PromptFramework = [
+      "You are a senior growth strategist and content marketer for a live-service mobile game with Web3 elements.",
+      "",
+      "Generate 5-10 distinct content ideas for the selected feature.",
+      "Each idea must use a different angle, goal label, and best-fit format.",
+      "Focus on player psychology, platform-native execution, and target behavior."
+    ].join("\n");
+
+    const step3PromptFramework = [
+      "You are a senior social media strategist and copywriter for Fableborne.",
+      "",
+      "Write platform-native marketing copy for the selected content idea.",
+      "Identify the emotional trigger, then produce format-optimized copy and on-asset hook.",
+      "Keep the tone competitive, energetic, player-first, and progression-driven."
+    ].join("\n");
+
+    const step4PromptFramework = [
+      "You are a senior creative strategist for a live-service mobile game marketing team.",
+      "",
+      "Generate a production-ready creative brief from the selected feature, content idea, and copy variant.",
+      "Prioritize mobile readability, one dominant emotional hook, scroll-stopping visuals, and clear production direction."
+    ].join("\n");
+
+    const state = loadState();
+
+    const stepTabs = Array.from(document.querySelectorAll(".tab"));
+    const steps = Array.from(document.querySelectorAll(".step"));
+    const backlogList = document.getElementById("backlog-list");
+    const summaryFeatureCount = document.getElementById("summary-feature-count");
+    const summarySelectedFeature = document.getElementById("summary-selected-feature");
+
+    const gameName = document.getElementById("game-name");
+    const seasonName = document.getElementById("season-name");
+    const seasonContext = document.getElementById("season-context");
+    const featureInput = document.getElementById("feature-input");
+    const supportingDocs = document.getElementById("supporting-docs");
+    const priorityFeatureName = document.getElementById("priority-feature-name");
+    const priorityTier = document.getElementById("priority-tier");
+    const prioritySummary = document.getElementById("priority-summary");
+    const priorityKpi = document.getElementById("priority-kpi");
+    const priorityTags = document.getElementById("priority-tags");
+    const step1OutputCard = document.getElementById("step1-output-card");
+    const step1PromptPreview = document.getElementById("step1-prompt-preview");
+
+    const step2FeatureSelect = document.getElementById("step2-feature-select");
+    const marketingTier = document.getElementById("marketing-tier");
+    const selectedFeatureDescription = document.getElementById("selected-feature-description");
+    const kpiData = document.getElementById("kpi-data");
+    const strategicTags = document.getElementById("strategic-tags");
+    const step2SupportingContext = document.getElementById("step2-supporting-context");
+    const contentIdea = document.getElementById("content-idea");
+    const contentAngle = document.getElementById("content-angle");
+    const contentGoal = document.getElementById("content-goal");
+    const contentFormat = document.getElementById("content-format");
+    const contentBehavior = document.getElementById("content-behavior");
+    const contentWhy = document.getElementById("content-why");
+    const step2PromptPreview = document.getElementById("step2-prompt-preview");
+    const step2SavedList = document.getElementById("step2-saved-list");
+
+    const step3FeatureSelect = document.getElementById("step3-feature-select");
+    const step3IdeaSelect = document.getElementById("step3-idea-select");
+    const step3FeatureSummary = document.getElementById("step3-feature-summary");
+    const step3ContentIdea = document.getElementById("step3-content-idea");
+    const step3GoalLabel = document.getElementById("step3-goal-label");
+    const step3Format = document.getElementById("step3-format");
+    const step3Angle = document.getElementById("step3-angle");
+    const step3TargetBehavior = document.getElementById("step3-target-behavior");
+    const step3EmotionalTrigger = document.getElementById("step3-emotional-trigger");
+    const step3OnAssetCopy = document.getElementById("step3-on-asset-copy");
+    const step3MarketingCopy = document.getElementById("step3-marketing-copy");
+    const step3CopyWhy = document.getElementById("step3-copy-why");
+    const step3PromptPreview = document.getElementById("step3-prompt-preview");
+    const step3SavedList = document.getElementById("step3-saved-list");
+
+    const step4FeatureSelect = document.getElementById("step4-feature-select");
+    const step4CopySelect = document.getElementById("step4-copy-select");
+    const step4FeatureDescription = document.getElementById("step4-feature-description");
+    const step4ContentIdea = document.getElementById("step4-content-idea");
+    const step4ContentFormat = document.getElementById("step4-content-format");
+    const step4RecommendedSize = document.getElementById("step4-recommended-size");
+    const step4RecommendedType = document.getElementById("step4-recommended-type");
+    const step4GoalLabel = document.getElementById("step4-goal-label");
+    const step4MarketingCopy = document.getElementById("step4-marketing-copy");
+    const step4OnAssetCopy = document.getElementById("step4-on-asset-copy");
+    const step4EmotionalTrigger = document.getElementById("step4-emotional-trigger");
+    const step4TargetBehavior = document.getElementById("step4-target-behavior");
+    const step4Reaction = document.getElementById("step4-reaction");
+    const step4PlatformFit = document.getElementById("step4-platform-fit");
+    const step4BriefSummary = document.getElementById("step4-brief-summary");
+    const step4PromptPreview = document.getElementById("step4-prompt-preview");
+    const step4SavedList = document.getElementById("step4-saved-list");
+    const step4RecommendationCard = document.getElementById("step4-recommendation-card");
+
+    function loadState() {
+      try {
+        const raw = window.localStorage.getItem(storageKey);
+        if (!raw) {
+          return JSON.parse(JSON.stringify(defaultState));
+        }
+        const parsed = JSON.parse(raw);
+        return {
+          ...JSON.parse(JSON.stringify(defaultState)),
+          ...parsed,
+          features: Array.isArray(parsed.features) ? parsed.features : []
+        };
+      } catch (error) {
+        return JSON.parse(JSON.stringify(defaultState));
+      }
+    }
+
+    function persistState() {
+      window.localStorage.setItem(storageKey, JSON.stringify(state));
+    }
+
+    function uid(prefix) {
+      return prefix + "-" + Date.now() + "-" + Math.random().toString(16).slice(2, 8);
+    }
+
+    function escapeHtml(value) {
+      return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function parseFeatures(rawValue) {
+      return rawValue
+        .split("\n")
+        .map((line) => line.trim())
+        .filter(Boolean)
+        .map((line) => {
+          const parts = line.split("|").map((part) => part.trim());
+          return {
+            name: parts[0] || "",
+            description: parts[1] || "",
+            notes: parts.slice(2).join(" | ")
+          };
+        });
+    }
+
+    function getFeatureById(id) {
+      return state.features.find((feature) => feature.id === id) || null;
+    }
+
+    function getSelectedFeature() {
+      return getFeatureById(state.selectedFeatureId);
+    }
+
+    function tierClass(tier) {
+      if (tier.indexOf("Tier 1") !== -1) {
+        return "tier1";
+      }
+      if (tier.indexOf("Tier 2") !== -1) {
+        return "tier2";
+      }
+      if (tier.indexOf("Tier 3") !== -1) {
+        return "tier3";
+      }
+      return "";
+    }
+
+    function setActiveStep(stepId) {
+      state.activeStep = stepId;
+      stepTabs.forEach((tab) => {
+        tab.classList.toggle("active", tab.dataset.step === stepId);
+      });
+      steps.forEach((step) => {
+        step.classList.toggle("active", step.id === stepId);
+      });
+      persistState();
+    }
+
+    function syncTopLevelFields() {
+      gameName.value = state.gameName;
+      seasonName.value = state.seasonName;
+      seasonContext.value = state.seasonContext;
+      supportingDocs.value = state.supportingDocs;
+    }
+
+    function renderBacklog() {
+      summaryFeatureCount.textContent = state.features.length + (state.features.length === 1 ? " Feature" : " Features");
+      const selected = getSelectedFeature();
+      summarySelectedFeature.textContent = selected ? selected.name : "No feature selected";
+
+      if (!state.features.length) {
+        backlogList.innerHTML = '<div class="empty-state"><p class="empty-copy">Save features from Step 1 to create a reusable backlog.</p></div>';
+        return;
+      }
+
+      backlogList.innerHTML = state.features
+        .map((feature) => {
+          const priority = feature.priority || {};
+          const ideaCount = (feature.contentIdeas || []).length;
+          const copyCount = (feature.copyVariants || []).length;
+          const briefCount = (feature.creativeBriefs || []).length;
+          return (
+            '<div class="backlog-item' + (feature.id === state.selectedFeatureId ? " active" : "") + '">' +
+            "<h3>" + escapeHtml(feature.name) + "</h3>" +
+            '<p class="muted">' + escapeHtml(priority.summary || feature.description || "No summary yet.") + "</p>" +
+            '<div class="badge-row">' +
+            (priority.tier ? '<span class="badge ' + tierClass(priority.tier) + '">' + escapeHtml(priority.tier.replace(": ", " - ")) + "</span>" : "") +
+            (priority.kpi ? '<span class="badge">KPI: ' + escapeHtml(priority.kpi) + "</span>" : "") +
+            "</div>" +
+            '<div class="meta-row">' +
+            '<span class="badge">Ideas ' + ideaCount + "</span>" +
+            '<span class="badge">Copy ' + copyCount + "</span>" +
+            '<span class="badge">Briefs ' + briefCount + "</span>" +
+            "</div>" +
+            '<div class="mini-actions">' +
+            '<button class="btn primary small" type="button" data-action="select-feature" data-id="' + escapeHtml(feature.id) + '">Select</button>' +
+            '<button class="btn secondary small" type="button" data-action="feature-step2" data-id="' + escapeHtml(feature.id) + '">Step 2</button>' +
+            '<button class="btn ghost small" type="button" data-action="feature-step3" data-id="' + escapeHtml(feature.id) + '">Step 3</button>' +
+            "</div>" +
+            "</div>"
+          );
+        })
+        .join("");
+    }
+
+    function renderFeatureSelectors() {
+      const options = ['<option value="">Select a feature</option>']
+        .concat(
+          state.features.map((feature) => {
+            return '<option value="' + escapeHtml(feature.id) + '">' + escapeHtml(feature.name) + "</option>";
+          })
+        )
+        .join("");
+
+      step2FeatureSelect.innerHTML = options;
+      step3FeatureSelect.innerHTML = options;
+      step4FeatureSelect.innerHTML = options;
+
+      step2FeatureSelect.value = state.selectedFeatureId || "";
+      step3FeatureSelect.value = state.selectedFeatureId || "";
+      step4FeatureSelect.value = state.selectedFeatureId || "";
+    }
+
+    function fillPriorityCard() {
+      const feature = getSelectedFeature();
+      if (!feature) {
+        priorityFeatureName.value = "";
+        priorityTier.value = "";
+        prioritySummary.value = "";
+        priorityKpi.value = "";
+        priorityTags.value = "";
+        return;
+      }
+
+      priorityFeatureName.value = feature.name;
+      priorityTier.value = feature.priority.tier || "";
+      prioritySummary.value = feature.priority.summary || feature.description || "";
+      priorityKpi.value = feature.priority.kpi || "";
+      priorityTags.value = feature.priority.tags || "";
+    }
+
+    function fillStep2FromFeature(feature) {
+      if (!feature) {
+        return;
+      }
+      state.selectedFeatureId = feature.id;
+      step2FeatureSelect.value = feature.id;
+      marketingTier.value = feature.priority.tier || "";
+      selectedFeatureDescription.value = feature.priority.summary || feature.description || "";
+      kpiData.value = feature.priority.kpi || "";
+      strategicTags.value = feature.priority.tags || "";
+      step2SupportingContext.value = feature.notes || "";
+      refreshStep2Prompt();
+      renderAll();
+    }
+
+    function renderIdeaSelect(feature) {
+      const ideas = feature ? feature.contentIdeas || [] : [];
+      step3IdeaSelect.innerHTML = ['<option value="">Select a content idea</option>']
+        .concat(
+          ideas.map((idea) => {
+            return '<option value="' + escapeHtml(idea.id) + '">' + escapeHtml(idea.title) + "</option>";
+          })
+        )
+        .join("");
+
+      if (ideas.some((idea) => idea.id === state.selectedIdeaId)) {
+        step3IdeaSelect.value = state.selectedIdeaId;
+      } else {
+        state.selectedIdeaId = "";
+        step3IdeaSelect.value = "";
+      }
+    }
+
+    function fillStep3FromSelection() {
+      const feature = getSelectedFeature();
+      renderIdeaSelect(feature);
+      const idea = feature && feature.contentIdeas ? feature.contentIdeas.find((item) => item.id === state.selectedIdeaId) : null;
+
+      step3FeatureSummary.value = feature ? feature.priority.summary || feature.description || "" : "";
+      step3ContentIdea.value = idea ? idea.title : "";
+      step3GoalLabel.value = idea ? idea.goal : "";
+      step3Format.value = idea ? idea.format : "";
+      step3Angle.value = idea ? idea.angle : "";
+      step3TargetBehavior.value = idea ? idea.behavior : "";
+    }
+
+    function renderCopySelect(feature) {
+      const copies = feature ? feature.copyVariants || [] : [];
+      step4CopySelect.innerHTML = ['<option value="">Select a copy variant</option>']
+        .concat(
+          copies.map((copy) => {
+            return '<option value="' + escapeHtml(copy.id) + '">' + escapeHtml(copy.title) + "</option>";
+          })
+        )
+        .join("");
+
+      if (copies.some((copy) => copy.id === state.selectedCopyId)) {
+        step4CopySelect.value = state.selectedCopyId;
+      } else {
+        state.selectedCopyId = "";
+        step4CopySelect.value = "";
+      }
+    }
+
+    function fillStep4FromSelection() {
+      const feature = getSelectedFeature();
+      renderCopySelect(feature);
+      const copy = feature && feature.copyVariants ? feature.copyVariants.find((item) => item.id === state.selectedCopyId) : null;
+
+      step4FeatureDescription.value = feature ? feature.priority.summary || feature.description || "" : "";
+      step4ContentIdea.value = copy ? copy.ideaTitle : "";
+      step4ContentFormat.value = copy ? copy.format : "";
+      step4GoalLabel.value = copy ? copy.goal : "";
+      step4MarketingCopy.value = copy ? copy.marketingCopy : "";
+      step4OnAssetCopy.value = copy ? copy.onAssetCopy : "";
+      step4EmotionalTrigger.value = copy ? copy.emotionalTrigger : "";
+      step4TargetBehavior.value = copy ? copy.behavior : "";
+      applyStep4Recommendations();
+    }
+
+    function getStep4Recommendation(format) {
+      const normalized = (format || "").trim();
+      const map = {
+        "Short-form video": {
+          assetSize: "9:16",
+          contentType: "Gameplay edit",
+          platformSuitability: "TikTok, Reels, Shorts, X video",
+          structureType: "video",
+          reason: "Vertical gameplay edits are the strongest default for high-speed social feeds because motion and stakes land immediately.",
+          emphasis: "Hit the mistake or flex in the first 2 seconds, then prove the payoff fast."
+        },
+        "Long-form video": {
+          assetSize: "16:9",
+          contentType: "Mixed-media video",
+          platformSuitability: "YouTube, website, creator explainer",
+          structureType: "video",
+          reason: "Longer cuts need horizontal breathing room for pacing, explanation, and gameplay readability.",
+          emphasis: "Use stronger chaptering, bigger payoff beats, and clearer gameplay proof."
+        },
+        "Video Caption": {
+          assetSize: "9:16",
+          contentType: "Gameplay edit",
+          platformSuitability: "TikTok, Reels, Shorts, X video",
+          structureType: "video",
+          reason: "Caption-led clips still rely on vertical motion-first creative to win attention on mobile.",
+          emphasis: "Let the asset prove the claim while the caption sharpens the hook."
+        },
+        "Carousel/slides": {
+          assetSize: "carousel/slides",
+          contentType: "Infographic",
+          platformSuitability: "Instagram carousel, X companion asset, Discord education drop",
+          structureType: "carousel",
+          reason: "Carousels are best when the idea needs stepwise teaching, comparison, or mistake-to-fix sequencing.",
+          emphasis: "Each slide should carry one insight only, with slide one making the hardest claim."
+        },
+        "Thread": {
+          assetSize: "carousel/slides",
+          contentType: "Infographic",
+          platformSuitability: "X thread, Discord repost, community discussion",
+          structureType: "carousel",
+          reason: "A visual thread system works better when each beat is modular and escalation-friendly.",
+          emphasis: "Build a clean progression from hook to proof to takeaway."
+        },
+        "Tweet": {
+          assetSize: "1:1",
+          contentType: "Static image",
+          platformSuitability: "X, Discord repost, owned social feed",
+          structureType: "static",
+          reason: "Tweets usually need one immediate visual promise rather than a dense multi-beat asset.",
+          emphasis: "One focal subject, one bold hook, one instantly readable takeaway."
+        },
+        "Discord Post": {
+          assetSize: "1:1",
+          contentType: "Infographic",
+          platformSuitability: "Discord, patch note companion, community guide card",
+          structureType: "static",
+          reason: "Discord supports slightly denser visuals, so static guide-style support often outperforms pure hype assets.",
+          emphasis: "Clarity first, then participation cues."
+        },
+        "Article/Blog Intro": {
+          assetSize: "16:9",
+          contentType: "Static image",
+          platformSuitability: "Website, Medium, launcher, blog hero",
+          structureType: "static",
+          reason: "Editorial surfaces need a strong hero visual that sets stakes quickly without fighting the text.",
+          emphasis: "Use one dramatic key visual plus clean headline hierarchy."
+        },
+        "Meme": {
+          assetSize: "1:1",
+          contentType: "Meme",
+          platformSuitability: "X, Discord, community reposting",
+          structureType: "meme",
+          reason: "Memes spread best when the recognition is instant and the emotional read is obvious inside a second.",
+          emphasis: "Keep the joke or painful truth brutally simple."
+        }
+      };
+
+      return map[normalized] || {
+        assetSize: "1:1",
+        contentType: "Static image",
+        platformSuitability: "Social feed, Discord, owned channels",
+        structureType: "static",
+        reason: "When the format is unclear, a simple static asset is the safest readable default.",
+        emphasis: "One focal point and one dominant emotional promise."
+      };
+    }
+
+    function getStructureGuidance(structureType) {
+      if (structureType === "video") {
+        return {
+          opening: "Lead with the sharpest mistake, flex, or threat in the first 2 seconds.",
+          middle: "Escalate through proof, comparison, or one key mechanic shift.",
+          payoff: "Show the satisfying corrected play, reward moment, or competitive advantage.",
+          cta: "Push immediate action such as queueing, optimizing, or joining the event."
+        };
+      }
+      if (structureType === "carousel") {
+        return {
+          opening: "Slide 1 should make a hard claim or expose a costly mistake.",
+          middle: "Each slide should remove one layer of confusion or deepen the comparison.",
+          payoff: "End on the optimized setup, strongest reveal, or clean before-vs-after.",
+          cta: "Prompt players to save, share, or apply the setup now."
+        };
+      }
+      if (structureType === "meme") {
+        return {
+          opening: "Hit the joke or callout instantly.",
+          middle: "Use the image-text pairing to sharpen recognition, not explain the whole system.",
+          payoff: "Land the social truth or painful pattern that makes the post worth sharing.",
+          cta: "Encourage tags, reactions, or guild banter."
+        };
+      }
+      return {
+        opening: "Create one immediate focal point with an emotionally loaded hook.",
+        middle: "Support the hook with one clear proof point, UI moment, or comparison.",
+        payoff: "Make the benefit or mistake unmistakable at a glance.",
+        cta: "Push one clean next action."
+      };
+    }
+
+    function renderStep4RecommendationCard() {
+      const format = step4ContentFormat.value.trim();
+      if (!format) {
+        step4RecommendationCard.innerHTML = '<div class="empty-state"><p class="empty-copy">Choose a Step 4 content format to see the recommended asset type, size, and flow.</p></div>';
+        return;
+      }
+
+      const recommendation = getStep4Recommendation(format);
+      const structure = getStructureGuidance(recommendation.structureType);
+
+      step4RecommendationCard.innerHTML =
+        '<div class="summary-card"><h3>' + escapeHtml(format) + ' Recommendation</h3>' +
+        '<dl class="kv">' +
+        '<div><dt>Recommended Asset Size</dt><dd>' + escapeHtml(recommendation.assetSize) + '</dd></div>' +
+        '<div><dt>Recommended Content Type</dt><dd>' + escapeHtml(recommendation.contentType) + '</dd></div>' +
+        '<div><dt>Platform Fit</dt><dd>' + escapeHtml(recommendation.platformSuitability) + '</dd></div>' +
+        '<div><dt>Why This Format Works</dt><dd>' + escapeHtml(recommendation.reason) + '</dd></div>' +
+        '<div><dt>What To Emphasize</dt><dd>' + escapeHtml(recommendation.emphasis) + '</dd></div>' +
+        '<div><dt>Opening</dt><dd>' + escapeHtml(structure.opening) + '</dd></div>' +
+        '<div><dt>Middle</dt><dd>' + escapeHtml(structure.middle) + '</dd></div>' +
+        '<div><dt>Payoff</dt><dd>' + escapeHtml(structure.payoff) + '</dd></div>' +
+        '<div><dt>CTA</dt><dd>' + escapeHtml(structure.cta) + '</dd></div>' +
+        '</dl></div>';
+    }
+
+    function applyStep4Recommendations() {
+      const recommendation = getStep4Recommendation(step4ContentFormat.value);
+      step4RecommendedSize.value = recommendation.assetSize;
+      step4RecommendedType.value = recommendation.contentType;
+      if (!step4PlatformFit.value.trim()) {
+        step4PlatformFit.value = recommendation.platformSuitability;
+      }
+      renderStep4RecommendationCard();
+    }
+
+    function renderStep1OutputCard() {
+      const feature = getSelectedFeature();
+      if (!feature) {
+        step1OutputCard.innerHTML = '<div class="empty-state"><p class="empty-copy">Select a feature to see the compact priority card that later steps will inherit.</p></div>';
+        return;
+      }
+
+      step1OutputCard.innerHTML =
+        '<div class="summary-card"><h3>' + escapeHtml(feature.name) + '</h3>' +
+        '<dl class="kv">' +
+        '<div><dt>Summary</dt><dd>' + escapeHtml(feature.priority.summary || feature.description || "Not set") + '</dd></div>' +
+        '<div><dt>Tier</dt><dd>' + escapeHtml(feature.priority.tier || "Not set") + '</dd></div>' +
+        '<div><dt>KPI Snapshot</dt><dd>' + escapeHtml(feature.priority.kpi || "Not set") + '</dd></div>' +
+        '<div><dt>Strategic Tags</dt><dd>' + escapeHtml(feature.priority.tags || "Not set") + '</dd></div>' +
+        '<div><dt>Readiness</dt><dd>' + (feature.contentIdeas || []).length + ' saved ideas, ' + (feature.copyVariants || []).length + ' copy variants, ' + (feature.creativeBriefs || []).length + ' briefs</dd></div>' +
+        '</dl></div>';
+    }
+
+    function renderStep2SavedList() {
+      const feature = getSelectedFeature();
+      const ideas = feature ? feature.contentIdeas || [] : [];
+      if (!ideas.length) {
+        step2SavedList.innerHTML = '<div class="empty-state"><p class="empty-copy">No saved content ideas yet. Save the best ones here so you can promote them into copy later.</p></div>';
+        return;
+      }
+
+      step2SavedList.innerHTML = ideas
+        .map((idea) => {
+          return (
+            '<div class="saved-card">' +
+            "<h3>" + escapeHtml(idea.title) + "</h3>" +
+            '<p class="muted">' + escapeHtml(idea.why || "No rationale added.") + "</p>" +
+            '<div class="badge-row">' +
+            '<span class="badge">' + escapeHtml(idea.angle) + "</span>" +
+            '<span class="badge">' + escapeHtml(idea.goal) + "</span>" +
+            '<span class="badge">' + escapeHtml(idea.format) + "</span>" +
+            "</div>" +
+            '<div class="mini-actions">' +
+            '<button class="btn primary small" type="button" data-action="promote-idea" data-id="' + escapeHtml(idea.id) + '">Use In Step 3</button>' +
+            "</div>" +
+            "</div>"
+          );
+        })
+        .join("");
+    }
+
+    function renderStep3SavedList() {
+      const feature = getSelectedFeature();
+      const copies = feature ? feature.copyVariants || [] : [];
+      if (!copies.length) {
+        step3SavedList.innerHTML = '<div class="empty-state"><p class="empty-copy">No saved copy variants yet. Save winners here so Step 4 can inherit them automatically.</p></div>';
+        return;
+      }
+
+      step3SavedList.innerHTML = copies
+        .map((copy) => {
+          return (
+            '<div class="saved-card">' +
+            "<h3>" + escapeHtml(copy.onAssetCopy || copy.ideaTitle) + "</h3>" +
+            '<p class="muted">' + escapeHtml(copy.marketingCopy || "No copy text saved.") + "</p>" +
+            '<div class="badge-row">' +
+            '<span class="badge">' + escapeHtml(copy.goal) + "</span>" +
+            '<span class="badge">' + escapeHtml(copy.format) + "</span>" +
+            '<span class="badge">' + escapeHtml(copy.emotionalTrigger || "No trigger") + "</span>" +
+            "</div>" +
+            '<div class="mini-actions">' +
+            '<button class="btn primary small" type="button" data-action="promote-copy" data-id="' + escapeHtml(copy.id) + '">Use In Step 4</button>' +
+            "</div>" +
+            "</div>"
+          );
+        })
+        .join("");
+    }
+
+    function renderStep4SavedList() {
+      const feature = getSelectedFeature();
+      const briefs = feature ? feature.creativeBriefs || [] : [];
+      if (!briefs.length) {
+        step4SavedList.innerHTML = '<div class="empty-state"><p class="empty-copy">No creative brief records yet. Save them here to keep a clean execution history per feature.</p></div>';
+        return;
+      }
+
+      step4SavedList.innerHTML = briefs
+          .map((brief) => {
+            return (
+              '<div class="saved-card">' +
+              "<h3>" + escapeHtml(brief.reaction || brief.title) + "</h3>" +
+                '<p class="muted">' + escapeHtml(brief.summary || "No brief summary saved.") + "</p>" +
+                '<div class="badge-row">' +
+                '<span class="badge">' + escapeHtml(brief.goal) + "</span>" +
+                '<span class="badge">' + escapeHtml(brief.format) + "</span>" +
+                '<span class="badge">' + escapeHtml(brief.assetSize || "No size") + "</span>" +
+                '<span class="badge">' + escapeHtml(brief.contentType || "No type") + "</span>" +
+                '<span class="badge">' + escapeHtml(brief.platformFit || "Platform not set") + "</span>" +
+                "</div>" +
+                "</div>"
+              );
+            })
+        .join("");
+    }
+
+    function buildStep1Prompt() {
+      const features = state.features.length
+        ? state.features.map((feature, index) => {
+            return [
+              (index + 1) + ". " + feature.name,
+              "Description: " + (feature.description || "Not provided"),
+              "Supporting notes: " + (feature.notes || "None"),
+              "Current priority context: " + [
+                feature.priority.summary || "No summary",
+                feature.priority.tier || "No tier",
+                feature.priority.kpi || "No KPI snapshot",
+                feature.priority.tags || "No strategic tags"
+              ].join(" | ")
+            ].join("\n");
+          }).join("\n\n")
+        : "No features saved yet.";
+
+      return [
+        "PROJECT CONTEXT",
+        "Game / brand: " + (state.gameName || "Not specified"),
+        "Season / campaign: " + (state.seasonName || "Not specified"),
+        "Season context: " + (state.seasonContext || "Not specified"),
+        "",
+        "FEATURE BACKLOG",
+        features,
+        "",
+        "SUPPORTING DOCUMENTATION",
+        state.supportingDocs || "None provided.",
+        "",
+        "TASK",
+        step1PromptFramework
+      ].join("\n");
+    }
+
+    function buildStep2Prompt() {
+      const feature = getSelectedFeature();
+      return [
+        "FEATURE INPUT",
+        "Feature name: " + (feature ? feature.name : "Not selected"),
+        "Marketing priority flag: " + (marketingTier.value.trim() || "Not specified"),
+        "Feature description: " + (selectedFeatureDescription.value.trim() || "Not specified"),
+        "KPI importance data: " + (kpiData.value.trim() || "Not specified"),
+        "Strategic tags: " + (strategicTags.value.trim() || "Not specified"),
+        "Supporting context: " + (step2SupportingContext.value.trim() || "Not specified"),
+        "",
+        "TASK",
+        step2PromptFramework
+      ].join("\n");
+    }
+
+    function buildStep3Prompt() {
+      return [
+        "CONTENT INPUT",
+        "Feature summary: " + (step3FeatureSummary.value.trim() || "Not specified"),
+        "Content idea: " + (step3ContentIdea.value.trim() || "Not specified"),
+        "Goal label: " + (step3GoalLabel.value.trim() || "Not specified"),
+        "Content format: " + (step3Format.value.trim() || "Not specified"),
+        "Creative angle: " + (step3Angle.value.trim() || "Not specified"),
+        "Target behavior: " + (step3TargetBehavior.value.trim() || "Not specified"),
+        "",
+        "TASK",
+        step3PromptFramework
+      ].join("\n");
+    }
+
+    function buildStep4Prompt() {
+      return [
+        "CREATIVE INPUT",
+        "Feature description: " + (step4FeatureDescription.value.trim() || "Not specified"),
+        "Content idea: " + (step4ContentIdea.value.trim() || "Not specified"),
+        "Content format: " + (step4ContentFormat.value.trim() || "Not specified"),
+        "Recommended asset size: " + (step4RecommendedSize.value.trim() || "Not specified"),
+        "Recommended content type: " + (step4RecommendedType.value.trim() || "Not specified"),
+        "Goal label: " + (step4GoalLabel.value.trim() || "Not specified"),
+        "Marketing copy: " + (step4MarketingCopy.value.trim() || "Not specified"),
+        "Thumbnail / on-asset copy: " + (step4OnAssetCopy.value.trim() || "Not specified"),
+        "Emotional trigger: " + (step4EmotionalTrigger.value.trim() || "Not specified"),
+        "Target player behavior: " + (step4TargetBehavior.value.trim() || "Not specified"),
+        "",
+        "TASK",
+        step4PromptFramework
+      ].join("\n");
+    }
+
+    function refreshStep1Prompt() {
+      step1PromptPreview.textContent = buildStep1Prompt();
+    }
+
+    function refreshStep2Prompt() {
+      step2PromptPreview.textContent = buildStep2Prompt();
+    }
+
+    function refreshStep3Prompt() {
+      step3PromptPreview.textContent = buildStep3Prompt();
+    }
+
+    function refreshStep4Prompt() {
+      step4PromptPreview.textContent = buildStep4Prompt();
+    }
+
+    function renderAll() {
+      syncTopLevelFields();
+      renderBacklog();
+      renderFeatureSelectors();
+      fillPriorityCard();
+      fillStep3FromSelection();
+      fillStep4FromSelection();
+      renderStep1OutputCard();
+      renderStep2SavedList();
+      renderStep3SavedList();
+      renderStep4SavedList();
+      applyStep4Recommendations();
+      refreshStep1Prompt();
+      refreshStep2Prompt();
+      refreshStep3Prompt();
+      refreshStep4Prompt();
+      setActiveStep(state.activeStep || "step1");
+      persistState();
+    }
+
+    function selectFeature(featureId) {
+      state.selectedFeatureId = featureId;
+      state.selectedIdeaId = "";
+      state.selectedCopyId = "";
+      const feature = getSelectedFeature();
+      if (feature) {
+        fillStep2FromFeature(feature);
+      }
+      renderAll();
+    }
+
+    function saveFeaturesToBacklog() {
+      state.gameName = gameName.value.trim();
+      state.seasonName = seasonName.value.trim();
+      state.seasonContext = seasonContext.value.trim();
+      state.supportingDocs = supportingDocs.value.trim();
+
+      const parsed = parseFeatures(featureInput.value);
+      parsed.forEach((incoming) => {
+        if (!incoming.name) {
+          return;
+        }
+        const existing = state.features.find((feature) => feature.name.toLowerCase() === incoming.name.toLowerCase());
+        if (existing) {
+          existing.description = incoming.description || existing.description;
+          existing.notes = incoming.notes || existing.notes;
+          return;
+        }
+        state.features.push({
+          id: uid("feature"),
+          name: incoming.name,
+          description: incoming.description,
+          notes: incoming.notes,
+          priority: {
+            tier: "",
+            summary: incoming.description,
+            kpi: "",
+            tags: ""
+          },
+          contentIdeas: [],
+          copyVariants: [],
+          creativeBriefs: []
+        });
+      });
+
+      if (!state.selectedFeatureId && state.features.length) {
+        state.selectedFeatureId = state.features[0].id;
+      }
+      renderAll();
+    }
+
+    function savePriorityCard() {
+      const feature = getSelectedFeature();
+      if (!feature) {
+        return;
+      }
+      feature.name = priorityFeatureName.value.trim() || feature.name;
+      feature.priority.tier = priorityTier.value.trim();
+      feature.priority.summary = prioritySummary.value.trim();
+      feature.priority.kpi = priorityKpi.value.trim();
+      feature.priority.tags = priorityTags.value.trim();
+      renderAll();
+    }
+
+    function saveContentIdea() {
+      const feature = getSelectedFeature();
+      if (!feature || !contentIdea.value.trim()) {
+        return;
+      }
+      const idea = {
+        id: uid("idea"),
+        title: contentIdea.value.trim(),
+        angle: contentAngle.value.trim(),
+        goal: contentGoal.value.trim(),
+        format: contentFormat.value.trim(),
+        behavior: contentBehavior.value.trim(),
+        why: contentWhy.value.trim()
+      };
+      feature.contentIdeas.unshift(idea);
+      state.selectedIdeaId = idea.id;
+      renderAll();
+      setActiveStep("step2");
+    }
+
+    function saveCopyVariant() {
+      const feature = getSelectedFeature();
+      if (!feature || !step3MarketingCopy.value.trim()) {
+        return;
+      }
+      const copy = {
+        id: uid("copy"),
+        ideaId: state.selectedIdeaId,
+        ideaTitle: step3ContentIdea.value.trim(),
+        goal: step3GoalLabel.value.trim(),
+        format: step3Format.value.trim(),
+        behavior: step3TargetBehavior.value.trim(),
+        emotionalTrigger: step3EmotionalTrigger.value.trim(),
+        onAssetCopy: step3OnAssetCopy.value.trim(),
+        marketingCopy: step3MarketingCopy.value.trim(),
+        why: step3CopyWhy.value.trim()
+      };
+      feature.copyVariants.unshift(copy);
+      state.selectedCopyId = copy.id;
+      renderAll();
+      setActiveStep("step3");
+    }
+
+    function saveCreativeBrief() {
+      const feature = getSelectedFeature();
+      if (!feature || !step4BriefSummary.value.trim()) {
+        return;
+      }
+      feature.creativeBriefs.unshift({
+        id: uid("brief"),
+        title: step4ContentIdea.value.trim(),
+        goal: step4GoalLabel.value.trim(),
+        format: step4ContentFormat.value.trim(),
+        assetSize: step4RecommendedSize.value.trim(),
+        contentType: step4RecommendedType.value.trim(),
+        reaction: step4Reaction.value.trim(),
+        platformFit: step4PlatformFit.value.trim(),
+        summary: step4BriefSummary.value.trim()
+      });
+      renderAll();
+      setActiveStep("step4");
+    }
+
+    function promoteIdeaToStep3(ideaId) {
+      const feature = getSelectedFeature();
+      if (!feature) {
+        return;
+      }
+      const idea = feature.contentIdeas.find((item) => item.id === ideaId);
+      if (!idea) {
+        return;
+      }
+      state.selectedIdeaId = idea.id;
+      fillStep3FromSelection();
+      refreshStep3Prompt();
+      setActiveStep("step3");
+      renderAll();
+    }
+
+    function promoteCopyToStep4(copyId) {
+      const feature = getSelectedFeature();
+      if (!feature) {
+        return;
+      }
+      const copy = feature.copyVariants.find((item) => item.id === copyId);
+      if (!copy) {
+        return;
+      }
+      state.selectedCopyId = copy.id;
+      fillStep4FromSelection();
+      refreshStep4Prompt();
+      setActiveStep("step4");
+      renderAll();
+    }
+
+    function clearStep1() {
+      gameName.value = "";
+      seasonName.value = "";
+      seasonContext.value = "";
+      featureInput.value = "";
+      supportingDocs.value = "";
+    }
+
+    function clearAllData() {
+      Object.assign(state, JSON.parse(JSON.stringify(defaultState)));
+      featureInput.value = "";
+      clearStep2Fields();
+      clearStep3Fields();
+      clearStep4Fields();
+      renderAll();
+    }
+
+    function clearStep2Fields() {
+      marketingTier.value = "";
+      selectedFeatureDescription.value = "";
+      kpiData.value = "";
+      strategicTags.value = "";
+      step2SupportingContext.value = "";
+      contentIdea.value = "";
+      contentAngle.value = "";
+      contentGoal.value = "";
+      contentFormat.value = "";
+      contentBehavior.value = "";
+      contentWhy.value = "";
+    }
+
+    function clearStep3Fields() {
+      step3FeatureSummary.value = "";
+      step3ContentIdea.value = "";
+      step3GoalLabel.value = "";
+      step3Format.value = "";
+      step3Angle.value = "";
+      step3TargetBehavior.value = "";
+      step3EmotionalTrigger.value = "";
+      step3OnAssetCopy.value = "";
+      step3MarketingCopy.value = "";
+      step3CopyWhy.value = "";
+    }
+
+    function clearStep4Fields() {
+      step4FeatureDescription.value = "";
+      step4ContentIdea.value = "";
+      step4ContentFormat.value = "";
+      step4RecommendedSize.value = "";
+      step4RecommendedType.value = "";
+      step4GoalLabel.value = "";
+      step4MarketingCopy.value = "";
+      step4OnAssetCopy.value = "";
+      step4EmotionalTrigger.value = "";
+      step4TargetBehavior.value = "";
+      step4Reaction.value = "";
+      step4PlatformFit.value = "";
+      step4BriefSummary.value = "";
+    }
+
+    function loadStep1Sample() {
+      gameName.value = "Fableborne";
+      seasonName.value = "Season 12: Guild Wars";
+      seasonContext.value = "This season is meant to deepen guild coordination, increase repeat weekly engagement, and create visible competitive stakes around coordinated play.";
+      featureInput.value = [
+        "Guild Boss Ladder | A recurring guild PvE ladder with score-based rewards and weekly leaderboard resets | High coordination pressure, replayable loop, social bragging rights",
+        "Relic Forge Refresh | A new relic crafting branch that lets players reroll and upgrade gear perks | Late-game progression sink, economy pressure, optimization appeal",
+        "Starter Expedition Track | A guided mission track that teaches seasonal systems through milestone rewards | New-player comprehension, lower event friction, early habit formation"
+      ].join("\n");
+      supportingDocs.value = "Guild Boss Ladder anchors the season narrative. Relic Forge Refresh is tied to premium resource burn. Starter Expedition Track exists to reduce onboarding drop-off.";
+    }
+
+    function loadStep2Sample() {
+      if (!state.features.length) {
+        loadAllSamples();
+        return;
+      }
+      const feature = state.features[0];
+      selectFeature(feature.id);
+      contentIdea.value = "Most guilds waste their first ladder run by forcing the wrong comp before they understand the scoring pressure.";
+      contentAngle.value = "Mistakes players make";
+      contentGoal.value = "Participate";
+      contentFormat.value = "Carousel/slides";
+      contentBehavior.value = "Get guild members to refine comps and join the ladder early instead of blind-queueing.";
+      contentWhy.value = "Uses loss aversion and status pressure, works well as a swipeable teachable sequence, and pushes immediate weekly participation.";
+      refreshStep2Prompt();
+    }
+
+    function loadStep3Sample() {
+      if (!state.features.length) {
+        loadAllSamples();
+      }
+      const feature = state.features[0];
+      selectFeature(feature.id);
+      if (!feature.contentIdeas.length) {
+        feature.contentIdeas.push({
+          id: uid("idea"),
+          title: "Most guilds waste their first ladder run by forcing the wrong comp before they understand the scoring pressure.",
+          angle: "Mistakes players make",
+          goal: "Participate",
+          format: "Tweet",
+          behavior: "Get guild members to refine comps and enter the ladder this week.",
+          why: "Uses status pressure and fear of falling behind."
+        });
+      }
+      state.selectedIdeaId = feature.contentIdeas[0].id;
+      fillStep3FromSelection();
+      step3EmotionalTrigger.value = "Competitive urgency";
+      step3OnAssetCopy.value = "You're Throwing Runs";
+      step3MarketingCopy.value = "Most guilds lose ladder ground before the real climb even starts. Tighten your comp, hit reset ready, and stop giving free points to teams that came prepared.";
+      step3CopyWhy.value = "Fast mobile hook, status pressure, and immediate push into coordinated event participation.";
+      refreshStep3Prompt();
+      renderAll();
+    }
+
+    function loadStep4Sample() {
+      if (!state.features.length) {
+        loadAllSamples();
+      }
+      const feature = state.features[0];
+      selectFeature(feature.id);
+      if (!feature.copyVariants.length) {
+        feature.copyVariants.push({
+          id: uid("copy"),
+          ideaId: "",
+          ideaTitle: "Most guilds waste their first ladder run by forcing the wrong comp before they understand the scoring pressure.",
+          goal: "Participate",
+          format: "Short-form video",
+          behavior: "Get guild members to coordinate and enter the ladder this week.",
+          emotionalTrigger: "Competitive urgency",
+          onAssetCopy: "You're Throwing Runs",
+          marketingCopy: "Most guilds lose ladder ground before the real climb even starts. Tighten your comp and stop giving away free points.",
+          why: "Strong first-line tension and clear action."
+        });
+      }
+      state.selectedCopyId = feature.copyVariants[0].id;
+      fillStep4FromSelection();
+      step4Reaction.value = "I am already behind if my guild queues wrong";
+      step4PlatformFit.value = "TikTok, Reels, Shorts, X video";
+      step4BriefSummary.value = "Open with a failed team comp snapshot, then cut fast into the corrected version with large text callouts on score pressure and reset timing. Keep the promise simple: smart prep equals leaderboard relevance.";
+      applyStep4Recommendations();
+      refreshStep4Prompt();
+      renderAll();
+    }
+
+    function loadAllSamples() {
+      loadStep1Sample();
+      saveFeaturesToBacklog();
+      selectFeature(state.features[0].id);
+      priorityTier.value = "Tier 1: Core marketing pillar";
+      prioritySummary.value = "A recurring guild PvE ladder where coordinated clears, score pressure, and weekly resets create a social climb loop with visible prestige.";
+      priorityKpi.value = "Engagement 5 | Retention 5 | Monetization 3 | Weighted 4.40";
+      priorityTags.value = "Retention Loop, Social/Multiplayer Driver";
+      savePriorityCard();
+      loadStep2Sample();
+      saveContentIdea();
+      loadStep3Sample();
+      saveCopyVariant();
+      loadStep4Sample();
+    }
+
+    function setCopyButtonState(button, label) {
+      const original = button.dataset.originalLabel || button.textContent;
+      button.dataset.originalLabel = original;
+      button.textContent = label;
+      window.setTimeout(function () {
+        button.textContent = original;
+      }, 1600);
+    }
+
+    function fallbackCopyText(value) {
+      const helper = document.createElement("textarea");
+      helper.value = value;
+      helper.setAttribute("readonly", "");
+      helper.style.position = "fixed";
+      helper.style.top = "-9999px";
+      helper.style.opacity = "0";
+      document.body.appendChild(helper);
+      helper.focus();
+      helper.select();
+      helper.setSelectionRange(0, helper.value.length);
+
+      let copied = false;
+      try {
+        copied = document.execCommand("copy");
+      } catch (error) {
+        copied = false;
+      }
+
+      document.body.removeChild(helper);
+      return copied;
+    }
+
+    async function copyText(value, button) {
+      if (!value.trim()) {
+        return;
+      }
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(value);
+          setCopyButtonState(button, "Copied");
+          return;
+        }
+      } catch (error) {
+        // Fall through.
+      }
+      if (fallbackCopyText(value)) {
+        setCopyButtonState(button, "Copied");
+        return;
+      }
+      window.prompt("Copy the prompt below:", value);
+      setCopyButtonState(button, "Manual copy");
+    }
+
+    document.addEventListener("click", function (event) {
+      const action = event.target.dataset.action;
+      const id = event.target.dataset.id;
+      if (!action || !id) {
+        return;
+      }
+      if (action === "select-feature") {
+        selectFeature(id);
+      } else if (action === "feature-step2") {
+        selectFeature(id);
+        setActiveStep("step2");
+      } else if (action === "feature-step3") {
+        selectFeature(id);
+        setActiveStep("step3");
+      } else if (action === "promote-idea") {
+        promoteIdeaToStep3(id);
+      } else if (action === "promote-copy") {
+        promoteCopyToStep4(id);
+      }
+    });
+
+    stepTabs.forEach((tab) => {
+      tab.addEventListener("click", function () {
+        setActiveStep(tab.dataset.step);
+      });
+    });
+
+    [gameName, seasonName, seasonContext, supportingDocs].forEach((input) => {
+      input.addEventListener("input", function () {
+        state[input.id === "game-name" ? "gameName" : input.id === "season-name" ? "seasonName" : input.id === "season-context" ? "seasonContext" : "supportingDocs"] = input.value.trim();
+        refreshStep1Prompt();
+        persistState();
+      });
+    });
+
+    step2FeatureSelect.addEventListener("change", function () {
+      if (step2FeatureSelect.value) {
+        selectFeature(step2FeatureSelect.value);
+        fillStep2FromFeature(getSelectedFeature());
+      }
+    });
+
+    step3FeatureSelect.addEventListener("change", function () {
+      if (step3FeatureSelect.value) {
+        selectFeature(step3FeatureSelect.value);
+      }
+      fillStep3FromSelection();
+      refreshStep3Prompt();
+    });
+
+    step3IdeaSelect.addEventListener("change", function () {
+      state.selectedIdeaId = step3IdeaSelect.value;
+      fillStep3FromSelection();
+      refreshStep3Prompt();
+      persistState();
+    });
+
+    step4FeatureSelect.addEventListener("change", function () {
+      if (step4FeatureSelect.value) {
+        selectFeature(step4FeatureSelect.value);
+      }
+      fillStep4FromSelection();
+      refreshStep4Prompt();
+    });
+
+    step4CopySelect.addEventListener("change", function () {
+      state.selectedCopyId = step4CopySelect.value;
+      fillStep4FromSelection();
+      refreshStep4Prompt();
+      persistState();
+    });
+
+    [
+      marketingTier,
+      selectedFeatureDescription,
+      kpiData,
+      strategicTags,
+      step2SupportingContext,
+      contentIdea,
+      contentAngle,
+      contentGoal,
+      contentFormat,
+      contentBehavior,
+      contentWhy
+    ].forEach((input) => {
+      input.addEventListener("input", refreshStep2Prompt);
+      input.addEventListener("change", refreshStep2Prompt);
+    });
+
+    [
+      step3FeatureSummary,
+      step3ContentIdea,
+      step3GoalLabel,
+      step3Format,
+      step3Angle,
+      step3TargetBehavior,
+      step3EmotionalTrigger,
+      step3OnAssetCopy,
+      step3MarketingCopy,
+      step3CopyWhy
+    ].forEach((input) => {
+      input.addEventListener("input", refreshStep3Prompt);
+      input.addEventListener("change", refreshStep3Prompt);
+    });
+
+    [
+      step4FeatureDescription,
+      step4ContentIdea,
+      step4ContentFormat,
+      step4GoalLabel,
+      step4MarketingCopy,
+      step4OnAssetCopy,
+      step4EmotionalTrigger,
+      step4TargetBehavior,
+      step4Reaction,
+      step4PlatformFit,
+      step4BriefSummary
+    ].forEach((input) => {
+      input.addEventListener("input", refreshStep4Prompt);
+      input.addEventListener("change", refreshStep4Prompt);
+    });
+
+    step4ContentFormat.addEventListener("change", function () {
+      step4PlatformFit.value = "";
+      applyStep4Recommendations();
+      refreshStep4Prompt();
+    });
+
+    document.getElementById("save-features-to-backlog").addEventListener("click", saveFeaturesToBacklog);
+    document.getElementById("save-priority-card").addEventListener("click", savePriorityCard);
+    document.getElementById("save-content-idea").addEventListener("click", saveContentIdea);
+    document.getElementById("save-copy-variant").addEventListener("click", saveCopyVariant);
+    document.getElementById("save-creative-brief").addEventListener("click", saveCreativeBrief);
+
+    document.getElementById("send-feature-to-step2").addEventListener("click", function () {
+      const feature = getSelectedFeature();
+      if (!feature) {
+        return;
+      }
+      fillStep2FromFeature(feature);
+      setActiveStep("step2");
+    });
+
+    document.getElementById("send-idea-to-step3").addEventListener("click", function () {
+      const feature = getSelectedFeature();
+      if (!feature || !feature.contentIdeas.length) {
+        return;
+      }
+      state.selectedIdeaId = feature.contentIdeas[0].id;
+      promoteIdeaToStep3(state.selectedIdeaId);
+    });
+
+    document.getElementById("send-copy-to-step4").addEventListener("click", function () {
+      const feature = getSelectedFeature();
+      if (!feature || !feature.copyVariants.length) {
+        return;
+      }
+      state.selectedCopyId = feature.copyVariants[0].id;
+      promoteCopyToStep4(state.selectedCopyId);
+    });
+
+    document.getElementById("load-step1-sample").addEventListener("click", loadStep1Sample);
+    document.getElementById("load-step2-sample").addEventListener("click", loadStep2Sample);
+    document.getElementById("load-step3-sample").addEventListener("click", loadStep3Sample);
+    document.getElementById("load-step4-sample").addEventListener("click", loadStep4Sample);
+    document.getElementById("load-all-samples").addEventListener("click", loadAllSamples);
+
+    document.getElementById("generate-step2").addEventListener("click", refreshStep2Prompt);
+    document.getElementById("generate-step3").addEventListener("click", refreshStep3Prompt);
+    document.getElementById("generate-step4").addEventListener("click", refreshStep4Prompt);
+
+    document.getElementById("clear-step1").addEventListener("click", clearStep1);
+    document.getElementById("clear-all-data").addEventListener("click", clearAllData);
+
+    document.getElementById("copy-step1-prompt").addEventListener("click", function (event) {
+      copyText(step1PromptPreview.textContent, event.currentTarget);
+    });
+    document.getElementById("copy-step2-prompt").addEventListener("click", function (event) {
+      copyText(step2PromptPreview.textContent, event.currentTarget);
+    });
+    document.getElementById("copy-step3-prompt").addEventListener("click", function (event) {
+      copyText(step3PromptPreview.textContent, event.currentTarget);
+    });
+    document.getElementById("copy-step4-prompt").addEventListener("click", function (event) {
+      copyText(step4PromptPreview.textContent, event.currentTarget);
+    });
+
+    if (state.features.length && !state.selectedFeatureId) {
+      state.selectedFeatureId = state.features[0].id;
+    }
+
+    renderAll();
+  </script>
+</body>
+</html>
