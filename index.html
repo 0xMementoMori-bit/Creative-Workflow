@@ -577,33 +577,23 @@
         <div class="hero-copy">
           <div class="eyebrow">Connected Workflow</div>
           <h1>Season Prep Content System</h1>
-          <p>
-            This version is built to cut repetition. Features live in one backlog, each step inherits the last one, and the main outputs are organized as compact cards instead of long prompt blocks.
-          </p>
-          <div class="chip-row">
-            <span class="chip">Persistent feature backlog</span>
-            <span class="chip">Step-to-step autofill</span>
-            <span class="chip">Saved content ideas</span>
-            <span class="chip">Saved copy variants</span>
-            <span class="chip">Saved creative briefs</span>
-          </div>
         </div>
         <div class="hero-stats">
           <div class="stat">
-            <strong>Shorter flow</strong>
-            <span>Pick a feature once, then promote it through ideation, copy, and creative without retyping the same context.</span>
+            <strong>Flow</strong>
+            <span>Select a feature once, then move it through each step.</span>
           </div>
           <div class="stat">
-            <strong>Cleaner output</strong>
-            <span>Each stage stores a structured record so the team can scan decisions fast instead of reading raw prompt text first.</span>
+            <strong>Output</strong>
+            <span>Save structured ideas, copy variants, and briefs.</span>
           </div>
           <div class="stat">
-            <strong>Local-first</strong>
-            <span>Everything is saved in your browser on this machine, so your backlog stays available after refresh.</span>
+            <strong>Saved</strong>
+            <span>Your backlog stays in this browser after refresh.</span>
           </div>
           <div class="stat">
-            <strong>Expandable</strong>
-            <span>The data model is ready for future steps or API wiring when you want to turn prompt builders into true runs.</span>
+            <strong>Flexible</strong>
+            <span>Add more steps or connect an API later.</span>
           </div>
         </div>
       </div>
@@ -613,7 +603,6 @@
       <aside class="sidebar">
         <section class="panel">
           <h2 class="section-title">Feature Backlog</h2>
-          <p class="muted">Your season features live here. Select one to autofill the next steps.</p>
           <div class="mini-actions">
             <button class="btn secondary small" id="load-all-samples" type="button">Load Demo Workflow</button>
             <button class="btn ghost small" id="clear-all-data" type="button">Reset All Data</button>
@@ -621,11 +610,11 @@
           <div class="summary-stack" style="margin-top: 14px;">
             <div class="summary-card">
               <h3 id="summary-feature-count">0 Features</h3>
-              <p class="muted">Tracked in the backlog.</p>
+              <p class="muted">In backlog</p>
             </div>
             <div class="summary-card">
               <h3 id="summary-selected-feature">No feature selected</h3>
-              <p class="muted">Choose one feature to drive the rest of the workflow.</p>
+              <p class="muted">Current selection</p>
             </div>
           </div>
           <div class="backlog-list" id="backlog-list" style="margin-top: 14px;"></div>
@@ -660,9 +649,6 @@
           <div class="stack">
             <article class="card">
               <h2>Step 1: Build the Feature Backlog</h2>
-              <p class="muted">
-                Add season features once. You can also attach summary, tier, KPI snapshot, and strategic tags here so later steps inherit the important context automatically.
-              </p>
               <div class="field-grid">
                 <div class="field">
                   <label for="game-name">Game / brand</label>
@@ -679,7 +665,6 @@
                 <div class="field full">
                   <label for="feature-input">Feature list</label>
                   <textarea id="feature-input" placeholder="One feature per line. Format: Feature name | short description | supporting notes"></textarea>
-                  <div class="field-note">This parser seeds the backlog quickly. Existing feature cards with the same name will be updated instead of duplicated.</div>
                 </div>
                 <div class="field full">
                   <label for="supporting-docs">Supporting documentation</label>
@@ -695,7 +680,6 @@
 
             <article class="card">
               <h2>Selected Feature Priority Card</h2>
-              <p class="muted">This is the lightweight record that helps the rest of the flow stay short.</p>
               <div class="field-grid">
                 <div class="field">
                   <label for="priority-feature-name">Feature name</label>
@@ -738,7 +722,6 @@
           <aside class="prompt-panel">
             <div class="card">
               <h3>Step 1 Prompt</h3>
-              <p class="prompt-note">Raw prompt stays available, but the output card is now the main working view.</p>
               <details>
                 <summary>View Prompt 1</summary>
                 <div class="prompt-body">
@@ -756,7 +739,6 @@
           <div class="stack">
             <article class="card">
               <h2>Step 2: Save Content Opportunities</h2>
-              <p class="muted">Select a backlog feature, generate the content prompt, then save the strongest idea as a reusable content record.</p>
               <div class="field-grid">
                 <div class="field">
                   <label for="step2-feature-select">Feature</label>
@@ -849,7 +831,6 @@
           <aside class="prompt-panel">
             <div class="card">
               <h3>Step 2 Prompt</h3>
-              <p class="prompt-note">Use the prompt when you want new idea generation. Save only the best ideas into the backlog.</p>
               <details>
                 <summary>View Prompt 2</summary>
                 <div class="prompt-body">
@@ -867,7 +848,6 @@
           <div class="stack">
             <article class="card">
               <h2>Step 3: Save Copy Variants</h2>
-              <p class="muted">Choose a feature and one saved content idea. The form below inherits the important context so you only focus on the copy decision.</p>
               <div class="field-grid">
                 <div class="field">
                   <label for="step3-feature-select">Feature</label>
@@ -960,7 +940,6 @@
           <aside class="prompt-panel">
             <div class="card">
               <h3>Step 3 Prompt</h3>
-              <p class="prompt-note">This step is now mostly about selecting the right idea and saving the best copy variant.</p>
               <details>
                 <summary>View Prompt 3</summary>
                 <div class="prompt-body">
@@ -978,7 +957,6 @@
           <div class="stack">
             <article class="card">
               <h2>Step 4: Save Creative Briefs</h2>
-              <p class="muted">Choose a feature and copy variant. This stage should feel like a direct handoff to production, not a re-entry task.</p>
               <div class="field-grid">
                 <div class="field">
                   <label for="step4-feature-select">Feature</label>
@@ -1087,7 +1065,6 @@
           <aside class="prompt-panel">
             <div class="card">
               <h3>Step 4 Prompt</h3>
-              <p class="prompt-note">This is now the clean final handoff step. You should already have the feature, idea, copy, and hook locked.</p>
               <details>
                 <summary>View Prompt 4</summary>
                 <div class="prompt-body">
@@ -1316,7 +1293,7 @@
       summarySelectedFeature.textContent = selected ? selected.name : "No feature selected";
 
       if (!state.features.length) {
-        backlogList.innerHTML = '<div class="empty-state"><p class="empty-copy">Save features from Step 1 to create a reusable backlog.</p></div>';
+        backlogList.innerHTML = '<div class="empty-state"><p class="empty-copy">No features yet.</p></div>';
         return;
       }
 
@@ -1589,7 +1566,7 @@
     function renderStep4RecommendationCard() {
       const format = step4ContentFormat.value.trim();
       if (!format) {
-        step4RecommendationCard.innerHTML = '<div class="empty-state"><p class="empty-copy">Choose a Step 4 content format to see the recommended asset type, size, and flow.</p></div>';
+        step4RecommendationCard.innerHTML = '<div class="empty-state"><p class="empty-copy">Choose a format to see recommendations.</p></div>';
         return;
       }
 
@@ -1624,7 +1601,7 @@
     function renderStep1OutputCard() {
       const feature = getSelectedFeature();
       if (!feature) {
-        step1OutputCard.innerHTML = '<div class="empty-state"><p class="empty-copy">Select a feature to see the compact priority card that later steps will inherit.</p></div>';
+          step1OutputCard.innerHTML = '<div class="empty-state"><p class="empty-copy">Select a feature.</p></div>';
         return;
       }
 
@@ -1643,7 +1620,7 @@
       const feature = getSelectedFeature();
       const ideas = feature ? feature.contentIdeas || [] : [];
       if (!ideas.length) {
-        step2SavedList.innerHTML = '<div class="empty-state"><p class="empty-copy">No saved content ideas yet. Save the best ones here so you can promote them into copy later.</p></div>';
+        step2SavedList.innerHTML = '<div class="empty-state"><p class="empty-copy">No content ideas yet.</p></div>';
         return;
       }
 
@@ -1671,7 +1648,7 @@
       const feature = getSelectedFeature();
       const copies = feature ? feature.copyVariants || [] : [];
       if (!copies.length) {
-        step3SavedList.innerHTML = '<div class="empty-state"><p class="empty-copy">No saved copy variants yet. Save winners here so Step 4 can inherit them automatically.</p></div>';
+        step3SavedList.innerHTML = '<div class="empty-state"><p class="empty-copy">No copy variants yet.</p></div>';
         return;
       }
 
@@ -1699,7 +1676,7 @@
       const feature = getSelectedFeature();
       const briefs = feature ? feature.creativeBriefs || [] : [];
       if (!briefs.length) {
-        step4SavedList.innerHTML = '<div class="empty-state"><p class="empty-copy">No creative brief records yet. Save them here to keep a clean execution history per feature.</p></div>';
+          step4SavedList.innerHTML = '<div class="empty-state"><p class="empty-copy">No creative briefs yet.</p></div>';
         return;
       }
 
