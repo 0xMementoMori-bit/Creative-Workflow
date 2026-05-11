@@ -231,6 +231,63 @@
       line-height: 1.2;
     }
 
+    .backlog-list.compact {
+      gap: 8px;
+    }
+
+    .backlog-list.compact .backlog-item {
+      padding: 0;
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+    }
+
+    .backlog-list.compact .backlog-item.active {
+      background: transparent;
+    }
+
+    .backlog-trigger {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.74);
+      color: var(--ink);
+      text-align: left;
+      transition: border-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+    }
+
+    .backlog-trigger:hover,
+    .backlog-trigger:focus-visible {
+      transform: translateY(-1px);
+      border-color: rgba(198, 82, 50, 0.28);
+      box-shadow: 0 12px 24px rgba(80, 54, 28, 0.08);
+      outline: none;
+    }
+
+    .backlog-item.active .backlog-trigger {
+      border-color: rgba(198, 82, 50, 0.38);
+      background:
+        radial-gradient(circle at top right, rgba(239, 182, 72, 0.18), transparent 35%),
+        rgba(255, 255, 255, 0.92);
+    }
+
+    .backlog-name {
+      font-weight: 700;
+      font-size: 1rem;
+      line-height: 1.2;
+    }
+
+    .backlog-count {
+      font-size: 0.82rem;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
     .meta-row,
     .badge-row {
       display: flex;
@@ -524,6 +581,117 @@
       margin-top: 12px;
     }
 
+    .saved-card {
+      position: relative;
+      overflow: hidden;
+      padding: 0;
+      background: rgba(255, 255, 255, 0.78);
+    }
+
+    .saved-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 4px;
+      background: rgba(70, 116, 158, 0.5);
+    }
+
+    .saved-card.idea::before {
+      background: rgba(239, 182, 72, 0.95);
+    }
+
+    .saved-card.copy::before {
+      background: rgba(70, 116, 158, 0.95);
+    }
+
+    .saved-card.brief::before {
+      background: rgba(49, 87, 75, 0.95);
+    }
+
+    .saved-card-shell {
+      padding: 16px 16px 14px 18px;
+    }
+
+    .saved-card-top {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .saved-card-kicker {
+      margin-bottom: 8px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .saved-card-title {
+      margin: 0;
+      font-size: 1.05rem;
+      line-height: 1.2;
+    }
+
+    .saved-card-lead {
+      margin-top: 10px;
+      font-size: 0.96rem;
+      line-height: 1.55;
+      color: var(--ink);
+    }
+
+    .saved-card-hook {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 8px 12px;
+      border-radius: 12px;
+      background: rgba(25, 36, 45, 0.04);
+      font-weight: 700;
+      line-height: 1.2;
+      text-align: right;
+    }
+
+    .saved-card-summary {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .saved-card details {
+      margin-top: 12px;
+      border: 0;
+      border-top: 1px solid rgba(25, 36, 45, 0.08);
+      border-radius: 0;
+      background: transparent;
+    }
+
+    .saved-card details summary {
+      padding: 12px 0 0;
+      font-size: 0.88rem;
+      color: var(--forest);
+    }
+
+    .saved-card-details {
+      display: grid;
+      gap: 10px;
+      padding: 12px 0 0;
+    }
+
+    .saved-card-details p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .saved-card-actions {
+      margin-top: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
     .helper-list {
       margin: 0;
       padding-left: 18px;
@@ -607,42 +775,32 @@
             <button class="btn secondary small" id="load-all-samples" type="button">Load Demo Workflow</button>
             <button class="btn ghost small" id="clear-all-data" type="button">Reset All Data</button>
           </div>
-          <div class="summary-stack" style="margin-top: 14px;">
-            <div class="summary-card">
-              <h3 id="summary-feature-count">0 Features</h3>
-              <p class="muted">In backlog</p>
-            </div>
-            <div class="summary-card">
-              <h3 id="summary-selected-feature">No feature selected</h3>
-              <p class="muted">Current selection</p>
-            </div>
-          </div>
-          <div class="backlog-list" id="backlog-list" style="margin-top: 14px;"></div>
+          <div class="backlog-list compact" id="backlog-list" style="margin-top: 14px;"></div>
         </section>
       </aside>
 
       <section class="main">
         <div class="tab-row">
-          <button class="tab active" type="button" data-step="step1">
-            <small>Step 1</small>
-            <strong>Backlog Setup</strong>
-            <span>Parse features, assign priority context, and save them once.</span>
-          </button>
-          <button class="tab" type="button" data-step="step2">
-            <small>Step 2</small>
-            <strong>Content Ideas</strong>
-            <span>Create and save content opportunities by feature.</span>
-          </button>
-          <button class="tab" type="button" data-step="step3">
-            <small>Step 3</small>
-            <strong>Copy Variants</strong>
-            <span>Promote a content idea into format-native copy.</span>
-          </button>
-          <button class="tab" type="button" data-step="step4">
-            <small>Step 4</small>
-            <strong>Creative Briefs</strong>
-            <span>Turn final concepts into production-ready visual direction.</span>
-          </button>
+            <button class="tab active" type="button" data-step="step1">
+              <small>Step 1</small>
+              <strong>Backlog Setup</strong>
+              <span>Add features and choose priority.</span>
+            </button>
+            <button class="tab" type="button" data-step="step2">
+              <small>Step 2</small>
+              <strong>Content Ideas</strong>
+              <span>Run Prompt 2, then save the winning idea.</span>
+            </button>
+            <button class="tab" type="button" data-step="step3">
+              <small>Step 3</small>
+              <strong>Copy Variants</strong>
+              <span>Run Prompt 3, then save the winning copy.</span>
+            </button>
+            <button class="tab" type="button" data-step="step4">
+              <small>Step 4</small>
+              <strong>Creative Briefs</strong>
+              <span>Run Prompt 4, then save the brief.</span>
+            </button>
         </div>
 
         <section class="step active" id="step1">
@@ -650,10 +808,6 @@
             <article class="card">
               <h2>Step 1: Build the Feature Backlog</h2>
               <div class="field-grid">
-                <div class="field">
-                  <label for="game-name">Game / brand</label>
-                  <input id="game-name" type="text" placeholder="Fableborne" />
-                </div>
                 <div class="field">
                   <label for="season-name">Season / campaign</label>
                   <input id="season-name" type="text" placeholder="Season 12: Guild Wars" />
@@ -698,14 +852,6 @@
                   <label for="priority-summary">Short summary</label>
                   <textarea id="priority-summary" placeholder="1-2 sentence feature summary that will carry into later steps."></textarea>
                 </div>
-                <div class="field">
-                  <label for="priority-kpi">KPI snapshot</label>
-                  <textarea id="priority-kpi" placeholder="Engagement 4 | Retention 5 | Monetization 3 | Weighted 4.10"></textarea>
-                </div>
-                <div class="field">
-                  <label for="priority-tags">Strategic tags</label>
-                  <textarea id="priority-tags" placeholder="Retention Loop, Social/Multiplayer Driver"></textarea>
-                </div>
               </div>
               <div class="button-row" style="margin-top: 16px;">
                 <button class="btn primary" id="save-priority-card" type="button">Save Priority Card</button>
@@ -729,7 +875,7 @@
                 </div>
               </details>
               <div class="button-row" style="margin-top: 14px;">
-                <button class="btn primary" id="copy-step1-prompt" type="button">Copy Prompt</button>
+                <button class="btn primary" id="copy-step1-prompt" type="button">Refresh + Copy Prompt</button>
               </div>
             </div>
           </aside>
@@ -738,7 +884,7 @@
         <section class="step" id="step2">
           <div class="stack">
             <article class="card">
-              <h2>Step 2: Save Content Opportunities</h2>
+              <h2>Step 2: Prepare Prompt 2</h2>
               <div class="field-grid">
                 <div class="field">
                   <label for="step2-feature-select">Feature</label>
@@ -752,18 +898,6 @@
                   <label for="selected-feature-description">Feature summary</label>
                   <textarea id="selected-feature-description" placeholder="Auto-filled from Step 1 or editable here."></textarea>
                 </div>
-                <div class="field">
-                  <label for="kpi-data">KPI importance data</label>
-                  <textarea id="kpi-data" placeholder="Auto-filled KPI snapshot"></textarea>
-                </div>
-                <div class="field">
-                  <label for="strategic-tags">Strategic tags</label>
-                  <textarea id="strategic-tags" placeholder="Auto-filled strategic tags"></textarea>
-                </div>
-                <div class="field full">
-                  <label for="step2-supporting-context">Supporting context</label>
-                  <textarea id="step2-supporting-context" placeholder="Player pain points, economy notes, creator context, or messaging constraints."></textarea>
-                </div>
               </div>
               <div class="button-row" style="margin-top: 16px;">
                 <button class="btn primary" id="generate-step2" type="button">Refresh Step 2 Prompt</button>
@@ -772,7 +906,7 @@
             </article>
 
             <article class="card">
-              <h2>Save a Content Idea</h2>
+              <h2>Step 2: Save Winning Content Idea</h2>
               <div class="field-grid">
                 <div class="field full">
                   <label for="content-idea">Content idea</label>
@@ -838,7 +972,7 @@
                 </div>
               </details>
               <div class="button-row" style="margin-top: 14px;">
-                <button class="btn primary" id="copy-step2-prompt" type="button">Copy Prompt</button>
+                <button class="btn primary" id="copy-step2-prompt" type="button">Refresh + Copy Prompt</button>
               </div>
             </div>
           </aside>
@@ -847,7 +981,7 @@
         <section class="step" id="step3">
           <div class="stack">
             <article class="card">
-              <h2>Step 3: Save Copy Variants</h2>
+              <h2>Step 3: Prepare Prompt 3</h2>
               <div class="field-grid">
                 <div class="field">
                   <label for="step3-feature-select">Feature</label>
@@ -906,7 +1040,7 @@
             </article>
 
             <article class="card">
-              <h2>Save a Copy Variant</h2>
+              <h2>Step 3: Save Winning Copy</h2>
               <div class="field-grid">
                 <div class="field">
                   <label for="step3-emotional-trigger">Emotional trigger</label>
@@ -947,7 +1081,7 @@
                 </div>
               </details>
               <div class="button-row" style="margin-top: 14px;">
-                <button class="btn primary" id="copy-step3-prompt" type="button">Copy Prompt</button>
+                <button class="btn primary" id="copy-step3-prompt" type="button">Refresh + Copy Prompt</button>
               </div>
             </div>
           </aside>
@@ -956,15 +1090,15 @@
         <section class="step" id="step4">
           <div class="stack">
             <article class="card">
-              <h2>Step 4: Save Creative Briefs</h2>
+              <h2>Step 4: Prepare Prompt 4</h2>
               <div class="field-grid">
                 <div class="field">
                   <label for="step4-feature-select">Feature</label>
                   <select id="step4-feature-select"></select>
                 </div>
                 <div class="field">
-                  <label for="step4-copy-select">Copy variant</label>
-                  <select id="step4-copy-select"></select>
+                    <label for="step4-copy-select">Choose saved copy to autofill</label>
+                    <select id="step4-copy-select"></select>
                 </div>
                 <div class="field full">
                   <label for="step4-feature-description">Feature description</label>
@@ -1036,7 +1170,7 @@
             </article>
 
             <article class="card">
-              <h2>Save a Creative Brief Record</h2>
+              <h2>Step 4: Save Creative Brief</h2>
               <div class="field-grid">
                 <div class="field">
                   <label for="step4-reaction">Intended emotional reaction</label>
@@ -1056,10 +1190,15 @@
               </div>
             </article>
 
-            <article class="card">
-              <h2>Saved Creative Briefs</h2>
-              <div id="step4-saved-list" class="saved-list"></div>
-            </article>
+              <article class="card">
+                <div class="saved-card-top" style="margin-bottom: 14px;">
+                  <div>
+                    <h2 style="margin-bottom: 0;">Saved Creative Briefs</h2>
+                  </div>
+                  <a class="btn secondary small" href="https://pixiongames.atlassian.net/jira/core/projects/PGM/board" target="_blank" rel="noreferrer">Open Jira Board</a>
+                </div>
+                <div id="step4-saved-list" class="saved-list"></div>
+              </article>
           </div>
 
           <aside class="prompt-panel">
@@ -1072,7 +1211,7 @@
                 </div>
               </details>
               <div class="button-row" style="margin-top: 14px;">
-                <button class="btn primary" id="copy-step4-prompt" type="button">Copy Prompt</button>
+                <button class="btn primary" id="copy-step4-prompt" type="button">Refresh + Copy Prompt</button>
               </div>
             </div>
           </aside>
@@ -1084,7 +1223,6 @@
   <script>
     const storageKey = "seasonPrepWorkflowState";
     const defaultState = {
-      gameName: "",
       seasonName: "",
       seasonContext: "",
       supportingDocs: "",
@@ -1092,26 +1230,35 @@
       selectedFeatureId: "",
       activeStep: "step1",
       selectedIdeaId: "",
+      editingIdeaId: "",
+      editingCopyId: "",
       selectedCopyId: ""
     };
 
     const step1PromptFramework = [
-      "You are a senior product marketing strategist for a mobile free-to-play game with Web3 elements.",
+      "You are a senior product marketing strategist for a live-service mobile free-to-play game with Web3 elements.",
       "",
-      "Your job is to evaluate and rank a list of upcoming season features based on their expected impact on core game KPIs so the content marketing team knows what deserves the most visibility.",
+      "Your job is not just to score features.",
+      "Your job is to determine which features deserve the season's limited marketing attention, which should lead acquisition and social conversation, which support retention quietly in the background, and which should be deprioritized entirely.",
       "",
-      "Score every feature for engagement, retention, and monetization.",
-      "Calculate weighted importance using 0.3 / 0.4 / 0.3.",
-      "Assign strategic tags and a marketing priority tier.",
-      "Return a structured table with behavioral reasoning."
+      "Evaluate every feature across Engagement, Retention, Monetization, and Marketability.",
+      "Calculate weighted importance using 0.25 / 0.30 / 0.25 / 0.20.",
+      "Separate gameplay importance from marketing usefulness.",
+      "Assign 1-2 strategic tags and a realistic Tier 1 / Tier 2 / Tier 3 marketing priority.",
+      "Return an executive summary plus a ranked table with behavioral and marketing reasoning."
     ].join("\n");
 
     const step2PromptFramework = [
       "You are a senior growth strategist and content marketer for a live-service mobile game with Web3 elements.",
       "",
-      "Generate 5-10 distinct content ideas for the selected feature.",
-      "Each idea must use a different angle, goal label, and best-fit format.",
-      "Focus on player psychology, platform-native execution, and target behavior."
+      "Your job is not to brainstorm random posts.",
+      "Your job is to turn a prioritized season feature into a structured content backlog that can drive acquisition attention, increase participation, reduce friction, strengthen retention behavior, improve conversion potential, and create social conversation.",
+      "",
+      "Generate 5-10 distinct content opportunities for the selected feature.",
+      "Each idea must target a different player motivation, use a different emotional or strategic angle, fit a specific content format, serve a clear marketing purpose, and drive a specific player behavior.",
+      "",
+      "Before generating ideas, identify the player problem, player fantasy, behavior encouraged, why players care right now, and why the feature is or is not easy to market.",
+      "For each idea, assign one goal label, one best-fit format, one primary marketing use, and explain why it works."
     ].join("\n");
 
     const step3PromptFramework = [
@@ -1134,10 +1281,6 @@
     const stepTabs = Array.from(document.querySelectorAll(".tab"));
     const steps = Array.from(document.querySelectorAll(".step"));
     const backlogList = document.getElementById("backlog-list");
-    const summaryFeatureCount = document.getElementById("summary-feature-count");
-    const summarySelectedFeature = document.getElementById("summary-selected-feature");
-
-    const gameName = document.getElementById("game-name");
     const seasonName = document.getElementById("season-name");
     const seasonContext = document.getElementById("season-context");
     const featureInput = document.getElementById("feature-input");
@@ -1145,17 +1288,12 @@
     const priorityFeatureName = document.getElementById("priority-feature-name");
     const priorityTier = document.getElementById("priority-tier");
     const prioritySummary = document.getElementById("priority-summary");
-    const priorityKpi = document.getElementById("priority-kpi");
-    const priorityTags = document.getElementById("priority-tags");
     const step1OutputCard = document.getElementById("step1-output-card");
     const step1PromptPreview = document.getElementById("step1-prompt-preview");
 
     const step2FeatureSelect = document.getElementById("step2-feature-select");
     const marketingTier = document.getElementById("marketing-tier");
     const selectedFeatureDescription = document.getElementById("selected-feature-description");
-    const kpiData = document.getElementById("kpi-data");
-    const strategicTags = document.getElementById("strategic-tags");
-    const step2SupportingContext = document.getElementById("step2-supporting-context");
     const contentIdea = document.getElementById("content-idea");
     const contentAngle = document.getElementById("content-angle");
     const contentGoal = document.getElementById("content-goal");
@@ -1281,49 +1419,31 @@
     }
 
     function syncTopLevelFields() {
-      gameName.value = state.gameName;
       seasonName.value = state.seasonName;
       seasonContext.value = state.seasonContext;
       supportingDocs.value = state.supportingDocs;
     }
 
     function renderBacklog() {
-      summaryFeatureCount.textContent = state.features.length + (state.features.length === 1 ? " Feature" : " Features");
       const selected = getSelectedFeature();
-      summarySelectedFeature.textContent = selected ? selected.name : "No feature selected";
 
       if (!state.features.length) {
         backlogList.innerHTML = '<div class="empty-state"><p class="empty-copy">No features yet.</p></div>';
         return;
       }
 
-      backlogList.innerHTML = state.features
-        .map((feature) => {
-          const priority = feature.priority || {};
-          const ideaCount = (feature.contentIdeas || []).length;
-          const copyCount = (feature.copyVariants || []).length;
-          const briefCount = (feature.creativeBriefs || []).length;
-          return (
-            '<div class="backlog-item' + (feature.id === state.selectedFeatureId ? " active" : "") + '">' +
-            "<h3>" + escapeHtml(feature.name) + "</h3>" +
-            '<p class="muted">' + escapeHtml(priority.summary || feature.description || "No summary yet.") + "</p>" +
-            '<div class="badge-row">' +
-            (priority.tier ? '<span class="badge ' + tierClass(priority.tier) + '">' + escapeHtml(priority.tier.replace(": ", " - ")) + "</span>" : "") +
-            (priority.kpi ? '<span class="badge">KPI: ' + escapeHtml(priority.kpi) + "</span>" : "") +
-            "</div>" +
-            '<div class="meta-row">' +
-            '<span class="badge">Ideas ' + ideaCount + "</span>" +
-            '<span class="badge">Copy ' + copyCount + "</span>" +
-            '<span class="badge">Briefs ' + briefCount + "</span>" +
-            "</div>" +
-            '<div class="mini-actions">' +
-            '<button class="btn primary small" type="button" data-action="select-feature" data-id="' + escapeHtml(feature.id) + '">Select</button>' +
-            '<button class="btn secondary small" type="button" data-action="feature-step2" data-id="' + escapeHtml(feature.id) + '">Step 2</button>' +
-            '<button class="btn ghost small" type="button" data-action="feature-step3" data-id="' + escapeHtml(feature.id) + '">Step 3</button>' +
-            "</div>" +
-            "</div>"
-          );
-        })
+        backlogList.innerHTML = state.features
+          .map((feature) => {
+            const ideaCount = (feature.contentIdeas || []).length;
+            return (
+              '<div class="backlog-item' + (feature.id === state.selectedFeatureId ? " active" : "") + '">' +
+              '<button class="backlog-trigger" type="button" data-action="select-feature" data-id="' + escapeHtml(feature.id) + '">' +
+              '<span class="backlog-name">' + escapeHtml(feature.name) + "</span>" +
+              '<span class="backlog-count">' + ideaCount + " ideas" + "</span>" +
+              "</button>" +
+              "</div>"
+            );
+          })
         .join("");
     }
 
@@ -1359,8 +1479,6 @@
       priorityFeatureName.value = feature.name;
       priorityTier.value = feature.priority.tier || "";
       prioritySummary.value = feature.priority.summary || feature.description || "";
-      priorityKpi.value = feature.priority.kpi || "";
-      priorityTags.value = feature.priority.tags || "";
     }
 
     function fillStep2FromFeature(feature) {
@@ -1371,9 +1489,6 @@
       step2FeatureSelect.value = feature.id;
       marketingTier.value = feature.priority.tier || "";
       selectedFeatureDescription.value = feature.priority.summary || feature.description || "";
-      kpiData.value = feature.priority.kpi || "";
-      strategicTags.value = feature.priority.tags || "";
-      step2SupportingContext.value = feature.notes || "";
       refreshStep2Prompt();
       renderAll();
     }
@@ -1487,11 +1602,11 @@
           emphasis: "Build a clean progression from hook to proof to takeaway."
         },
         "Tweet": {
-          assetSize: "1:1",
+          assetSize: "16:9",
           contentType: "Static image",
           platformSuitability: "X, Discord repost, owned social feed",
           structureType: "static",
-          reason: "Tweets usually need one immediate visual promise rather than a dense multi-beat asset.",
+          reason: "Tweets often perform better with a wider, thumbnail-friendly visual that reads cleanly in feed previews and shared embeds.",
           emphasis: "One focal subject, one bold hook, one instantly readable takeaway."
         },
         "Discord Post": {
@@ -1605,16 +1720,14 @@
         return;
       }
 
-      step1OutputCard.innerHTML =
+        step1OutputCard.innerHTML =
         '<div class="summary-card"><h3>' + escapeHtml(feature.name) + '</h3>' +
         '<dl class="kv">' +
         '<div><dt>Summary</dt><dd>' + escapeHtml(feature.priority.summary || feature.description || "Not set") + '</dd></div>' +
         '<div><dt>Tier</dt><dd>' + escapeHtml(feature.priority.tier || "Not set") + '</dd></div>' +
-        '<div><dt>KPI Snapshot</dt><dd>' + escapeHtml(feature.priority.kpi || "Not set") + '</dd></div>' +
-        '<div><dt>Strategic Tags</dt><dd>' + escapeHtml(feature.priority.tags || "Not set") + '</dd></div>' +
         '<div><dt>Readiness</dt><dd>' + (feature.contentIdeas || []).length + ' saved ideas, ' + (feature.copyVariants || []).length + ' copy variants, ' + (feature.creativeBriefs || []).length + ' briefs</dd></div>' +
         '</dl></div>';
-    }
+      }
 
     function renderStep2SavedList() {
       const feature = getSelectedFeature();
@@ -1627,16 +1740,31 @@
       step2SavedList.innerHTML = ideas
         .map((idea) => {
           return (
-            '<div class="saved-card">' +
-            "<h3>" + escapeHtml(idea.title) + "</h3>" +
-            '<p class="muted">' + escapeHtml(idea.why || "No rationale added.") + "</p>" +
-            '<div class="badge-row">' +
-            '<span class="badge">' + escapeHtml(idea.angle) + "</span>" +
-            '<span class="badge">' + escapeHtml(idea.goal) + "</span>" +
-            '<span class="badge">' + escapeHtml(idea.format) + "</span>" +
+            '<div class="saved-card idea">' +
+            '<div class="saved-card-shell">' +
+            '<div class="saved-card-top">' +
+            '<div>' +
+            '<div class="saved-card-kicker">Content Idea</div>' +
+            '<h3 class="saved-card-title">' + escapeHtml(idea.title) + "</h3>" +
             "</div>" +
-            '<div class="mini-actions">' +
-            '<button class="btn primary small" type="button" data-action="promote-idea" data-id="' + escapeHtml(idea.id) + '">Use In Step 3</button>' +
+            '<div class="saved-card-hook">' + escapeHtml(idea.angle || "Idea") + "</div>" +
+            "</div>" +
+            '<div class="badge-row">' +
+            '<span class="badge">' + escapeHtml(idea.goal || "Goal") + "</span>" +
+            '<span class="badge">' + escapeHtml(idea.format || "Format") + "</span>" +
+            "</div>" +
+            '<p class="saved-card-lead">' + escapeHtml(idea.behavior || idea.why || "No summary yet.") + "</p>" +
+            '<details><summary>View details</summary>' +
+            '<div class="saved-card-details">' +
+            '<p><strong>Angle:</strong> ' + escapeHtml(idea.angle || "Not set") + "</p>" +
+            '<p><strong>Behavior:</strong> ' + escapeHtml(idea.behavior || "Not set") + "</p>" +
+            '<p><strong>Why it works:</strong> ' + escapeHtml(idea.why || "Not set") + "</p>" +
+            "</div></details>" +
+            '<div class="saved-card-actions">' +
+            '<button class="btn primary small" type="button" data-action="promote-idea" data-id="' + escapeHtml(idea.id) + '">Promote to Copy</button>' +
+            '<button class="btn secondary small" type="button" data-action="edit-idea" data-id="' + escapeHtml(idea.id) + '">Edit</button>' +
+            '<button class="btn ghost small" type="button" data-action="delete-idea" data-id="' + escapeHtml(idea.id) + '">Delete</button>' +
+            "</div>" +
             "</div>" +
             "</div>"
           );
@@ -1655,16 +1783,32 @@
       step3SavedList.innerHTML = copies
         .map((copy) => {
           return (
-            '<div class="saved-card">' +
-            "<h3>" + escapeHtml(copy.onAssetCopy || copy.ideaTitle) + "</h3>" +
-            '<p class="muted">' + escapeHtml(copy.marketingCopy || "No copy text saved.") + "</p>" +
-            '<div class="badge-row">' +
-            '<span class="badge">' + escapeHtml(copy.goal) + "</span>" +
-            '<span class="badge">' + escapeHtml(copy.format) + "</span>" +
-            '<span class="badge">' + escapeHtml(copy.emotionalTrigger || "No trigger") + "</span>" +
+            '<div class="saved-card copy">' +
+            '<div class="saved-card-shell">' +
+            '<div class="saved-card-top">' +
+            '<div>' +
+            '<div class="saved-card-kicker">Copy Variant</div>' +
+            '<h3 class="saved-card-title">' + escapeHtml(copy.ideaTitle || "Untitled copy") + "</h3>" +
             "</div>" +
-            '<div class="mini-actions">' +
-            '<button class="btn primary small" type="button" data-action="promote-copy" data-id="' + escapeHtml(copy.id) + '">Use In Step 4</button>' +
+            '<div class="saved-card-hook">' + escapeHtml(copy.onAssetCopy || "No hook") + "</div>" +
+            "</div>" +
+            '<div class="badge-row">' +
+            '<span class="badge">' + escapeHtml(copy.goal || "Goal") + "</span>" +
+            '<span class="badge">' + escapeHtml(copy.format || "Format") + "</span>" +
+            '<span class="badge">' + escapeHtml(copy.emotionalTrigger || "Trigger") + "</span>" +
+            "</div>" +
+            '<p class="saved-card-lead">' + escapeHtml(copy.marketingCopy || "No copy text saved.") + "</p>" +
+            '<details><summary>View details</summary>' +
+            '<div class="saved-card-details">' +
+            '<p><strong>On-asset copy:</strong> ' + escapeHtml(copy.onAssetCopy || "Not set") + "</p>" +
+            '<p><strong>Behavior:</strong> ' + escapeHtml(copy.behavior || "Not set") + "</p>" +
+            '<p><strong>Why it works:</strong> ' + escapeHtml(copy.why || "Not set") + "</p>" +
+            "</div></details>" +
+            '<div class="saved-card-actions">' +
+            '<button class="btn primary small" type="button" data-action="promote-copy" data-id="' + escapeHtml(copy.id) + '">Promote to Brief</button>' +
+            '<button class="btn secondary small" type="button" data-action="edit-copy" data-id="' + escapeHtml(copy.id) + '">Edit</button>' +
+            '<button class="btn ghost small" type="button" data-action="delete-copy" data-id="' + escapeHtml(copy.id) + '">Delete</button>' +
+            "</div>" +
             "</div>" +
             "</div>"
           );
@@ -1680,45 +1824,54 @@
         return;
       }
 
-      step4SavedList.innerHTML = briefs
-          .map((brief) => {
-            return (
-              '<div class="saved-card">' +
-              "<h3>" + escapeHtml(brief.reaction || brief.title) + "</h3>" +
-                '<p class="muted">' + escapeHtml(brief.summary || "No brief summary saved.") + "</p>" +
+        step4SavedList.innerHTML = briefs
+            .map((brief) => {
+              return (
+                '<div class="saved-card brief">' +
+                '<div class="saved-card-shell">' +
+                '<div class="saved-card-top">' +
+                '<div>' +
+                '<div class="saved-card-kicker">Creative Brief</div>' +
+                '<h3 class="saved-card-title">' + escapeHtml(brief.title || "Untitled brief") + "</h3>" +
+                "</div>" +
+                '<div class="saved-card-hook">' + escapeHtml(brief.assetSize || "Size") + "</div>" +
+                "</div>" +
                 '<div class="badge-row">' +
-                '<span class="badge">' + escapeHtml(brief.goal) + "</span>" +
-                '<span class="badge">' + escapeHtml(brief.format) + "</span>" +
-                '<span class="badge">' + escapeHtml(brief.assetSize || "No size") + "</span>" +
-                '<span class="badge">' + escapeHtml(brief.contentType || "No type") + "</span>" +
-                '<span class="badge">' + escapeHtml(brief.platformFit || "Platform not set") + "</span>" +
+                '<span class="badge">' + escapeHtml(brief.goal || "Goal") + "</span>" +
+                '<span class="badge">' + escapeHtml(brief.format || "Format") + "</span>" +
+                '<span class="badge">' + escapeHtml(brief.contentType || "Type") + "</span>" +
+                "</div>" +
+                '<p class="saved-card-lead">' + escapeHtml(brief.reaction || "No reaction set") + "</p>" +
+                '<details><summary>View details</summary>' +
+                '<div class="saved-card-details">' +
+                '<p><strong>Platform fit:</strong> ' + escapeHtml(brief.platformFit || "Not set") + "</p>" +
+                '<p><strong>Summary:</strong> ' + escapeHtml(brief.summary || "Not set") + "</p>" +
+                "</div></details>" +
                 "</div>" +
                 "</div>"
-              );
-            })
-        .join("");
-    }
+                );
+              })
+          .join("");
+      }
 
     function buildStep1Prompt() {
       const features = state.features.length
         ? state.features.map((feature, index) => {
-            return [
-              (index + 1) + ". " + feature.name,
-              "Description: " + (feature.description || "Not provided"),
-              "Supporting notes: " + (feature.notes || "None"),
-              "Current priority context: " + [
-                feature.priority.summary || "No summary",
-                feature.priority.tier || "No tier",
-                feature.priority.kpi || "No KPI snapshot",
-                feature.priority.tags || "No strategic tags"
-              ].join(" | ")
-            ].join("\n");
+              return [
+                (index + 1) + ". " + feature.name,
+                "Description: " + (feature.description || "Not provided"),
+                "Supporting notes: " + (feature.notes || "None"),
+                "Current priority context: " + [
+                  feature.priority.summary || "No summary",
+                  feature.priority.tier || "No tier"
+                ].join(" | ")
+              ].join("\n");
           }).join("\n\n")
         : "No features saved yet.";
 
       return [
         "PROJECT CONTEXT",
-        "Game / brand: " + (state.gameName || "Not specified"),
+        "Game / brand: Fableborne",
         "Season / campaign: " + (state.seasonName || "Not specified"),
         "Season context: " + (state.seasonContext || "Not specified"),
         "",
@@ -1740,9 +1893,6 @@
         "Feature name: " + (feature ? feature.name : "Not selected"),
         "Marketing priority flag: " + (marketingTier.value.trim() || "Not specified"),
         "Feature description: " + (selectedFeatureDescription.value.trim() || "Not specified"),
-        "KPI importance data: " + (kpiData.value.trim() || "Not specified"),
-        "Strategic tags: " + (strategicTags.value.trim() || "Not specified"),
-        "Supporting context: " + (step2SupportingContext.value.trim() || "Not specified"),
         "",
         "TASK",
         step2PromptFramework
@@ -1815,6 +1965,8 @@
       refreshStep2Prompt();
       refreshStep3Prompt();
       refreshStep4Prompt();
+      document.getElementById("save-content-idea").textContent = state.editingIdeaId ? "Update Content Idea" : "Save Content Idea";
+      document.getElementById("save-copy-variant").textContent = state.editingCopyId ? "Update Copy Variant" : "Save Copy Variant";
       setActiveStep(state.activeStep || "step1");
       persistState();
     }
@@ -1831,7 +1983,6 @@
     }
 
     function saveFeaturesToBacklog() {
-      state.gameName = gameName.value.trim();
       state.seasonName = seasonName.value.trim();
       state.seasonContext = seasonContext.value.trim();
       state.supportingDocs = supportingDocs.value.trim();
@@ -1878,8 +2029,6 @@
       feature.name = priorityFeatureName.value.trim() || feature.name;
       feature.priority.tier = priorityTier.value.trim();
       feature.priority.summary = prioritySummary.value.trim();
-      feature.priority.kpi = priorityKpi.value.trim();
-      feature.priority.tags = priorityTags.value.trim();
       renderAll();
     }
 
@@ -1888,19 +2037,65 @@
       if (!feature || !contentIdea.value.trim()) {
         return;
       }
-      const idea = {
-        id: uid("idea"),
-        title: contentIdea.value.trim(),
-        angle: contentAngle.value.trim(),
-        goal: contentGoal.value.trim(),
-        format: contentFormat.value.trim(),
-        behavior: contentBehavior.value.trim(),
-        why: contentWhy.value.trim()
+      const existing = state.editingIdeaId ? feature.contentIdeas.find((item) => item.id === state.editingIdeaId) : null;
+      const idea = existing || {
+        id: uid("idea")
       };
-      feature.contentIdeas.unshift(idea);
+      idea.title = contentIdea.value.trim();
+      idea.angle = contentAngle.value.trim();
+      idea.goal = contentGoal.value.trim();
+      idea.format = contentFormat.value.trim();
+      idea.behavior = contentBehavior.value.trim();
+      idea.why = contentWhy.value.trim();
+
+      if (!existing) {
+        feature.contentIdeas.unshift(idea);
+      }
       state.selectedIdeaId = idea.id;
+      state.editingIdeaId = "";
       renderAll();
       setActiveStep("step2");
+    }
+
+    function loadIdeaIntoEditor(ideaId) {
+      const feature = getSelectedFeature();
+      if (!feature) {
+        return;
+      }
+      const idea = feature.contentIdeas.find((item) => item.id === ideaId);
+      if (!idea) {
+        return;
+      }
+      state.editingIdeaId = idea.id;
+      contentIdea.value = idea.title || "";
+      contentAngle.value = idea.angle || "";
+      contentGoal.value = idea.goal || "";
+      contentFormat.value = idea.format || "";
+      contentBehavior.value = idea.behavior || "";
+      contentWhy.value = idea.why || "";
+      refreshStep2Prompt();
+      renderAll();
+    }
+
+    function deleteIdea(ideaId) {
+      const feature = getSelectedFeature();
+      if (!feature) {
+        return;
+      }
+      feature.contentIdeas = (feature.contentIdeas || []).filter((item) => item.id !== ideaId);
+      if (state.selectedIdeaId === ideaId) {
+        state.selectedIdeaId = "";
+      }
+      if (state.editingIdeaId === ideaId) {
+        state.editingIdeaId = "";
+        contentIdea.value = "";
+        contentAngle.value = "";
+        contentGoal.value = "";
+        contentFormat.value = "";
+        contentBehavior.value = "";
+        contentWhy.value = "";
+      }
+      renderAll();
     }
 
     function saveCopyVariant() {
@@ -1908,22 +2103,68 @@
       if (!feature || !step3MarketingCopy.value.trim()) {
         return;
       }
-      const copy = {
+      const existing = state.editingCopyId ? feature.copyVariants.find((item) => item.id === state.editingCopyId) : null;
+      const copy = existing || {
         id: uid("copy"),
-        ideaId: state.selectedIdeaId,
-        ideaTitle: step3ContentIdea.value.trim(),
-        goal: step3GoalLabel.value.trim(),
-        format: step3Format.value.trim(),
-        behavior: step3TargetBehavior.value.trim(),
-        emotionalTrigger: step3EmotionalTrigger.value.trim(),
-        onAssetCopy: step3OnAssetCopy.value.trim(),
-        marketingCopy: step3MarketingCopy.value.trim(),
-        why: step3CopyWhy.value.trim()
+        ideaId: state.selectedIdeaId
       };
-      feature.copyVariants.unshift(copy);
+      copy.ideaTitle = step3ContentIdea.value.trim();
+      copy.goal = step3GoalLabel.value.trim();
+      copy.format = step3Format.value.trim();
+      copy.behavior = step3TargetBehavior.value.trim();
+      copy.emotionalTrigger = step3EmotionalTrigger.value.trim();
+      copy.onAssetCopy = step3OnAssetCopy.value.trim();
+      copy.marketingCopy = step3MarketingCopy.value.trim();
+      copy.why = step3CopyWhy.value.trim();
+
+      if (!existing) {
+        feature.copyVariants.unshift(copy);
+      }
       state.selectedCopyId = copy.id;
+      state.editingCopyId = "";
       renderAll();
       setActiveStep("step3");
+    }
+
+    function loadCopyIntoEditor(copyId) {
+      const feature = getSelectedFeature();
+      if (!feature) {
+        return;
+      }
+      const copy = feature.copyVariants.find((item) => item.id === copyId);
+      if (!copy) {
+        return;
+      }
+      state.editingCopyId = copy.id;
+      step3ContentIdea.value = copy.ideaTitle || "";
+      step3GoalLabel.value = copy.goal || "";
+      step3Format.value = copy.format || "";
+      step3TargetBehavior.value = copy.behavior || "";
+      step3EmotionalTrigger.value = copy.emotionalTrigger || "";
+      step3OnAssetCopy.value = copy.onAssetCopy || "";
+      step3MarketingCopy.value = copy.marketingCopy || "";
+      step3CopyWhy.value = copy.why || "";
+      refreshStep3Prompt();
+      renderAll();
+    }
+
+    function deleteCopy(copyId) {
+      const feature = getSelectedFeature();
+      if (!feature) {
+        return;
+      }
+      feature.copyVariants = (feature.copyVariants || []).filter((item) => item.id !== copyId);
+      if (state.selectedCopyId === copyId) {
+        state.selectedCopyId = "";
+      }
+      if (state.editingCopyId === copyId) {
+        state.editingCopyId = "";
+        step3EmotionalTrigger.value = "";
+        step3OnAssetCopy.value = "";
+        step3MarketingCopy.value = "";
+        step3CopyWhy.value = "";
+      }
+      renderAll();
     }
 
     function saveCreativeBrief() {
@@ -1979,7 +2220,6 @@
     }
 
     function clearStep1() {
-      gameName.value = "";
       seasonName.value = "";
       seasonContext.value = "";
       featureInput.value = "";
@@ -1998,9 +2238,6 @@
     function clearStep2Fields() {
       marketingTier.value = "";
       selectedFeatureDescription.value = "";
-      kpiData.value = "";
-      strategicTags.value = "";
-      step2SupportingContext.value = "";
       contentIdea.value = "";
       contentAngle.value = "";
       contentGoal.value = "";
@@ -2039,7 +2276,6 @@
     }
 
     function loadStep1Sample() {
-      gameName.value = "Fableborne";
       seasonName.value = "Season 12: Guild Wars";
       seasonContext.value = "This season is meant to deepen guild coordination, increase repeat weekly engagement, and create visible competitive stakes around coordinated play.";
       featureInput.value = [
@@ -2129,8 +2365,6 @@
       selectFeature(state.features[0].id);
       priorityTier.value = "Tier 1: Core marketing pillar";
       prioritySummary.value = "A recurring guild PvE ladder where coordinated clears, score pressure, and weekly resets create a social climb loop with visible prestige.";
-      priorityKpi.value = "Engagement 5 | Retention 5 | Monetization 3 | Weighted 4.40";
-      priorityTags.value = "Retention Loop, Social/Multiplayer Driver";
       savePriorityCard();
       loadStep2Sample();
       saveContentIdea();
@@ -2210,6 +2444,14 @@
         promoteIdeaToStep3(id);
       } else if (action === "promote-copy") {
         promoteCopyToStep4(id);
+      } else if (action === "edit-idea") {
+        loadIdeaIntoEditor(id);
+      } else if (action === "delete-idea") {
+        deleteIdea(id);
+      } else if (action === "edit-copy") {
+        loadCopyIntoEditor(id);
+      } else if (action === "delete-copy") {
+        deleteCopy(id);
       }
     });
 
@@ -2219,9 +2461,9 @@
       });
     });
 
-    [gameName, seasonName, seasonContext, supportingDocs].forEach((input) => {
+    [seasonName, seasonContext, supportingDocs].forEach((input) => {
       input.addEventListener("input", function () {
-        state[input.id === "game-name" ? "gameName" : input.id === "season-name" ? "seasonName" : input.id === "season-context" ? "seasonContext" : "supportingDocs"] = input.value.trim();
+        state[input.id === "season-name" ? "seasonName" : input.id === "season-context" ? "seasonContext" : "supportingDocs"] = input.value.trim();
         refreshStep1Prompt();
         persistState();
       });
@@ -2267,9 +2509,6 @@
     [
       marketingTier,
       selectedFeatureDescription,
-      kpiData,
-      strategicTags,
-      step2SupportingContext,
       contentIdea,
       contentAngle,
       contentGoal,
@@ -2367,15 +2606,19 @@
     document.getElementById("clear-all-data").addEventListener("click", clearAllData);
 
     document.getElementById("copy-step1-prompt").addEventListener("click", function (event) {
+      refreshStep1Prompt();
       copyText(step1PromptPreview.textContent, event.currentTarget);
     });
     document.getElementById("copy-step2-prompt").addEventListener("click", function (event) {
+      refreshStep2Prompt();
       copyText(step2PromptPreview.textContent, event.currentTarget);
     });
     document.getElementById("copy-step3-prompt").addEventListener("click", function (event) {
+      refreshStep3Prompt();
       copyText(step3PromptPreview.textContent, event.currentTarget);
     });
     document.getElementById("copy-step4-prompt").addEventListener("click", function (event) {
+      refreshStep4Prompt();
       copyText(step4PromptPreview.textContent, event.currentTarget);
     });
 
