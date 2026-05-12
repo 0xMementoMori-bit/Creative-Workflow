@@ -26,12 +26,18 @@ You will receive:
 1. Feature name
 2. Feature description
 3. Marketing priority tier
-4. Optional supporting context
+4. Optional content focus or feature subset
+5. Optional supporting context
 
 If context is incomplete:
 
 - infer reasonably from the feature description
 - do not invent detailed mechanics unless strongly implied
+
+If a content focus or feature subset is provided:
+
+- generate ideas specifically for that slice rather than the feature as a whole
+- treat that slice as the primary lens for player motivation, messaging, and format choice
 
 ## Objective
 

@@ -745,23 +745,18 @@
         <div class="hero-copy">
           <div class="eyebrow">Connected Workflow</div>
           <h1>Season Prep Content System</h1>
-        </div>
-        <div class="hero-stats">
           <div class="stat">
-            <strong>Flow</strong>
-            <span>Select a feature once, then move it through each step.</span>
-          </div>
-          <div class="stat">
-            <strong>Output</strong>
-            <span>Save structured ideas, copy variants, and briefs.</span>
-          </div>
-          <div class="stat">
-            <strong>Saved</strong>
-            <span>Your backlog stays in this browser after refresh.</span>
-          </div>
-          <div class="stat">
-            <strong>Flexible</strong>
-            <span>Add more steps or connect an API later.</span>
+            <strong>How to use</strong>
+            <ol class="helper-list">
+              <li>Add season features in Step 1 and save them to the backlog.</li>
+              <li>Set the priority for the feature you want to work on.</li>
+              <li>In Step 2, choose that feature and add a Content focus if you want ideas for a specific slice.</li>
+              <li>Refresh + copy Prompt 2, run it, then save the best content ideas.</li>
+              <li>Promote one idea to Step 3.</li>
+              <li>Refresh + copy Prompt 3, run it, then save the best copy variant.</li>
+              <li>Promote one copy variant to Step 4.</li>
+              <li>Refresh + copy Prompt 4, run it, then save the final creative brief.</li>
+            </ol>
           </div>
         </div>
       </div>
@@ -898,6 +893,10 @@
                   <label for="selected-feature-description">Feature summary</label>
                   <textarea id="selected-feature-description" placeholder="Auto-filled from Step 1 or editable here."></textarea>
                 </div>
+                <div class="field full">
+                  <label for="content-focus">Content focus</label>
+                  <input id="content-focus" type="text" placeholder="Example: Week-one onboarding, top guild optimization, reward urgency" />
+                </div>
               </div>
               <div class="button-row" style="margin-top: 16px;">
                 <button class="btn primary" id="generate-step2" type="button">Refresh Step 2 Prompt</button>
@@ -998,6 +997,10 @@
                 <div class="field full">
                   <label for="step3-content-idea">Content idea</label>
                   <textarea id="step3-content-idea" placeholder="Auto-filled from selected content idea"></textarea>
+                </div>
+                <div class="field full">
+                  <label for="step3-content-focus">Content focus</label>
+                  <input id="step3-content-focus" type="text" placeholder="Auto-filled from selected content idea" />
                 </div>
                 <div class="field">
                   <label for="step3-goal-label">Goal label</label>
@@ -1107,6 +1110,10 @@
                 <div class="field full">
                   <label for="step4-content-idea">Content idea</label>
                   <textarea id="step4-content-idea" placeholder="Auto-filled from selected content idea / copy"></textarea>
+                </div>
+                <div class="field full">
+                  <label for="step4-content-focus">Content focus</label>
+                  <input id="step4-content-focus" type="text" placeholder="Auto-filled from selected content idea / copy" />
                 </div>
                   <div class="field">
                     <label for="step4-content-format">Content format</label>
@@ -1254,6 +1261,9 @@
       "Your job is not to brainstorm random posts.",
       "Your job is to turn a prioritized season feature into a structured content backlog that can drive acquisition attention, increase participation, reduce friction, strengthen retention behavior, improve conversion potential, and create social conversation.",
       "",
+      "If a content focus or feature subset is provided, generate ideas specifically for that slice rather than the feature as a whole.",
+      "Treat the slice as the primary lens for player motivation, messaging, and format choice.",
+      "",
       "Generate 5-10 distinct content opportunities for the selected feature.",
       "Each idea must target a different player motivation, use a different emotional or strategic angle, fit a specific content format, serve a clear marketing purpose, and drive a specific player behavior.",
       "",
@@ -1294,6 +1304,7 @@
     const step2FeatureSelect = document.getElementById("step2-feature-select");
     const marketingTier = document.getElementById("marketing-tier");
     const selectedFeatureDescription = document.getElementById("selected-feature-description");
+    const contentFocus = document.getElementById("content-focus");
     const contentIdea = document.getElementById("content-idea");
     const contentAngle = document.getElementById("content-angle");
     const contentGoal = document.getElementById("content-goal");
@@ -1307,6 +1318,7 @@
     const step3IdeaSelect = document.getElementById("step3-idea-select");
     const step3FeatureSummary = document.getElementById("step3-feature-summary");
     const step3ContentIdea = document.getElementById("step3-content-idea");
+    const step3ContentFocus = document.getElementById("step3-content-focus");
     const step3GoalLabel = document.getElementById("step3-goal-label");
     const step3Format = document.getElementById("step3-format");
     const step3Angle = document.getElementById("step3-angle");
@@ -1322,6 +1334,7 @@
     const step4CopySelect = document.getElementById("step4-copy-select");
     const step4FeatureDescription = document.getElementById("step4-feature-description");
     const step4ContentIdea = document.getElementById("step4-content-idea");
+    const step4ContentFocus = document.getElementById("step4-content-focus");
     const step4ContentFormat = document.getElementById("step4-content-format");
     const step4RecommendedSize = document.getElementById("step4-recommended-size");
     const step4RecommendedType = document.getElementById("step4-recommended-type");
@@ -1489,6 +1502,7 @@
       step2FeatureSelect.value = feature.id;
       marketingTier.value = feature.priority.tier || "";
       selectedFeatureDescription.value = feature.priority.summary || feature.description || "";
+      contentFocus.value = "";
       refreshStep2Prompt();
       renderAll();
     }
@@ -1518,6 +1532,7 @@
 
       step3FeatureSummary.value = feature ? feature.priority.summary || feature.description || "" : "";
       step3ContentIdea.value = idea ? idea.title : "";
+      step3ContentFocus.value = idea ? idea.focus || "" : "";
       step3GoalLabel.value = idea ? idea.goal : "";
       step3Format.value = idea ? idea.format : "";
       step3Angle.value = idea ? idea.angle : "";
@@ -1549,6 +1564,7 @@
 
       step4FeatureDescription.value = feature ? feature.priority.summary || feature.description || "" : "";
       step4ContentIdea.value = copy ? copy.ideaTitle : "";
+      step4ContentFocus.value = copy ? copy.focus || "" : "";
       step4ContentFormat.value = copy ? copy.format : "";
       step4GoalLabel.value = copy ? copy.goal : "";
       step4MarketingCopy.value = copy ? copy.marketingCopy : "";
@@ -1756,6 +1772,7 @@
             '<p class="saved-card-lead">' + escapeHtml(idea.behavior || idea.why || "No summary yet.") + "</p>" +
             '<details><summary>View details</summary>' +
             '<div class="saved-card-details">' +
+            '<p><strong>Content focus:</strong> ' + escapeHtml(idea.focus || "Full feature") + "</p>" +
             '<p><strong>Angle:</strong> ' + escapeHtml(idea.angle || "Not set") + "</p>" +
             '<p><strong>Behavior:</strong> ' + escapeHtml(idea.behavior || "Not set") + "</p>" +
             '<p><strong>Why it works:</strong> ' + escapeHtml(idea.why || "Not set") + "</p>" +
@@ -1800,6 +1817,7 @@
             '<p class="saved-card-lead">' + escapeHtml(copy.marketingCopy || "No copy text saved.") + "</p>" +
             '<details><summary>View details</summary>' +
             '<div class="saved-card-details">' +
+            '<p><strong>Content focus:</strong> ' + escapeHtml(copy.focus || "Full feature") + "</p>" +
             '<p><strong>On-asset copy:</strong> ' + escapeHtml(copy.onAssetCopy || "Not set") + "</p>" +
             '<p><strong>Behavior:</strong> ' + escapeHtml(copy.behavior || "Not set") + "</p>" +
             '<p><strong>Why it works:</strong> ' + escapeHtml(copy.why || "Not set") + "</p>" +
@@ -1844,6 +1862,7 @@
                 '<p class="saved-card-lead">' + escapeHtml(brief.reaction || "No reaction set") + "</p>" +
                 '<details><summary>View details</summary>' +
                 '<div class="saved-card-details">' +
+                '<p><strong>Content focus:</strong> ' + escapeHtml(brief.focus || "Full feature") + "</p>" +
                 '<p><strong>Platform fit:</strong> ' + escapeHtml(brief.platformFit || "Not set") + "</p>" +
                 '<p><strong>Summary:</strong> ' + escapeHtml(brief.summary || "Not set") + "</p>" +
                 "</div></details>" +
@@ -1893,6 +1912,7 @@
         "Feature name: " + (feature ? feature.name : "Not selected"),
         "Marketing priority flag: " + (marketingTier.value.trim() || "Not specified"),
         "Feature description: " + (selectedFeatureDescription.value.trim() || "Not specified"),
+        "Content focus: " + (contentFocus.value.trim() || "Full feature"),
         "",
         "TASK",
         step2PromptFramework
@@ -1904,6 +1924,7 @@
         "CONTENT INPUT",
         "Feature summary: " + (step3FeatureSummary.value.trim() || "Not specified"),
         "Content idea: " + (step3ContentIdea.value.trim() || "Not specified"),
+        "Content focus: " + (step3ContentFocus.value.trim() || "Full feature"),
         "Goal label: " + (step3GoalLabel.value.trim() || "Not specified"),
         "Content format: " + (step3Format.value.trim() || "Not specified"),
         "Creative angle: " + (step3Angle.value.trim() || "Not specified"),
@@ -1919,6 +1940,7 @@
         "CREATIVE INPUT",
         "Feature description: " + (step4FeatureDescription.value.trim() || "Not specified"),
         "Content idea: " + (step4ContentIdea.value.trim() || "Not specified"),
+        "Content focus: " + (step4ContentFocus.value.trim() || "Full feature"),
         "Content format: " + (step4ContentFormat.value.trim() || "Not specified"),
         "Recommended asset size: " + (step4RecommendedSize.value.trim() || "Not specified"),
         "Recommended content type: " + (step4RecommendedType.value.trim() || "Not specified"),
@@ -2042,6 +2064,7 @@
         id: uid("idea")
       };
       idea.title = contentIdea.value.trim();
+      idea.focus = contentFocus.value.trim();
       idea.angle = contentAngle.value.trim();
       idea.goal = contentGoal.value.trim();
       idea.format = contentFormat.value.trim();
@@ -2068,6 +2091,7 @@
       }
       state.editingIdeaId = idea.id;
       contentIdea.value = idea.title || "";
+      contentFocus.value = idea.focus || "";
       contentAngle.value = idea.angle || "";
       contentGoal.value = idea.goal || "";
       contentFormat.value = idea.format || "";
@@ -2089,6 +2113,7 @@
       if (state.editingIdeaId === ideaId) {
         state.editingIdeaId = "";
         contentIdea.value = "";
+        contentFocus.value = "";
         contentAngle.value = "";
         contentGoal.value = "";
         contentFormat.value = "";
@@ -2109,6 +2134,7 @@
         ideaId: state.selectedIdeaId
       };
       copy.ideaTitle = step3ContentIdea.value.trim();
+      copy.focus = step3ContentFocus.value.trim();
       copy.goal = step3GoalLabel.value.trim();
       copy.format = step3Format.value.trim();
       copy.behavior = step3TargetBehavior.value.trim();
@@ -2137,6 +2163,7 @@
       }
       state.editingCopyId = copy.id;
       step3ContentIdea.value = copy.ideaTitle || "";
+      step3ContentFocus.value = copy.focus || "";
       step3GoalLabel.value = copy.goal || "";
       step3Format.value = copy.format || "";
       step3TargetBehavior.value = copy.behavior || "";
@@ -2175,6 +2202,7 @@
       feature.creativeBriefs.unshift({
         id: uid("brief"),
         title: step4ContentIdea.value.trim(),
+        focus: step4ContentFocus.value.trim(),
         goal: step4GoalLabel.value.trim(),
         format: step4ContentFormat.value.trim(),
         assetSize: step4RecommendedSize.value.trim(),
@@ -2238,6 +2266,7 @@
     function clearStep2Fields() {
       marketingTier.value = "";
       selectedFeatureDescription.value = "";
+      contentFocus.value = "";
       contentIdea.value = "";
       contentAngle.value = "";
       contentGoal.value = "";
@@ -2249,6 +2278,7 @@
     function clearStep3Fields() {
       step3FeatureSummary.value = "";
       step3ContentIdea.value = "";
+      step3ContentFocus.value = "";
       step3GoalLabel.value = "";
       step3Format.value = "";
       step3Angle.value = "";
@@ -2262,6 +2292,7 @@
     function clearStep4Fields() {
       step4FeatureDescription.value = "";
       step4ContentIdea.value = "";
+      step4ContentFocus.value = "";
       step4ContentFormat.value = "";
       step4RecommendedSize.value = "";
       step4RecommendedType.value = "";
@@ -2293,6 +2324,7 @@
       }
       const feature = state.features[0];
       selectFeature(feature.id);
+      contentFocus.value = "Week-one guild comp mistakes";
       contentIdea.value = "Most guilds waste their first ladder run by forcing the wrong comp before they understand the scoring pressure.";
       contentAngle.value = "Mistakes players make";
       contentGoal.value = "Participate";
@@ -2312,6 +2344,7 @@
         feature.contentIdeas.push({
           id: uid("idea"),
           title: "Most guilds waste their first ladder run by forcing the wrong comp before they understand the scoring pressure.",
+          focus: "Week-one guild comp mistakes",
           angle: "Mistakes players make",
           goal: "Participate",
           format: "Tweet",
@@ -2340,6 +2373,7 @@
           id: uid("copy"),
           ideaId: "",
           ideaTitle: "Most guilds waste their first ladder run by forcing the wrong comp before they understand the scoring pressure.",
+          focus: "Week-one guild comp mistakes",
           goal: "Participate",
           format: "Short-form video",
           behavior: "Get guild members to coordinate and enter the ladder this week.",
@@ -2509,6 +2543,7 @@
     [
       marketingTier,
       selectedFeatureDescription,
+      contentFocus,
       contentIdea,
       contentAngle,
       contentGoal,
@@ -2523,6 +2558,7 @@
     [
       step3FeatureSummary,
       step3ContentIdea,
+      step3ContentFocus,
       step3GoalLabel,
       step3Format,
       step3Angle,
@@ -2539,6 +2575,7 @@
     [
       step4FeatureDescription,
       step4ContentIdea,
+      step4ContentFocus,
       step4ContentFormat,
       step4GoalLabel,
       step4MarketingCopy,
